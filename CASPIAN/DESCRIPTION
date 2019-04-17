@@ -1,0 +1,12 @@
+Package: CASPIAN
+Type: Package
+Title: Calculation of Alien Species Probability of Invasion Along Networks
+Version: 0.1.0
+Author: Maurizio Bagnara, Hanno Seebens
+Maintainer: Hanno Seebens <hanno.seebens@senckenberg.de>
+Description: More about what it does (maybe more than one line)
+    Use four spaces when indenting paragraphs within the Description.
+Depends: data.table, rgdal, SearchTrees, geosphere, sp, openxlsx, raster
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true

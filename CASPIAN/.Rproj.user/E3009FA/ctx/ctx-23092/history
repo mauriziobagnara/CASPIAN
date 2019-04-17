@@ -1,0 +1,512 @@
+legend("topleft",c(paste0("Iter. #",names(list_results)[i])),box.col = "white",bg = "white")
+plot(border_dataset,axes=F,add=T)
+# legend part
+op <- par(mar=c(0.1,4.5,0.1,0.5))
+num_legend<-40
+color_legend <- rev(c("black","grey93", "forestgreen", colfunc(num_legend)))
+xl <- 1
+yb <- 1
+xr <- 1.5
+yt <- 2
+plot(NA,type="n",ann=FALSE,xlim=c(1,1.6),ylim=c(1,2),xaxt="n",yaxt="n",bty="n")
+rect(
+xl,
+head(seq(yb,yt,(yt-yb)/(num_legend+3)),-1),
+xr,
+tail(seq(yb,yt,(yt-yb)/(num_legend+3)),-1),
+col= color_legend,
+border = color_legend
+)
+mtext(
+c("Administrative border",
+"Species not introduced",
+"Species introduced but not established",
+"Species has invaded with probability = Pinv"),
+side=4,
+at= c(rev(seq(yb,yt,(yt-yb)/(num_legend+3)))-c(1/44))[c(1:4)],
+las=2,cex=0.7)
+mtext(
+paste("Pinv =",seq(1,0,by=-0.1),sep=" "),
+side=2,at= c(seq(yb,yt,(yt-yb)/(num_legend+3))[seq(1,(num_legend+1),by=c(num_legend/10))]),
+las=2,cex=0.7)
+frame()
+op <- par(mar=c(0.1,1,0.1,0.5))
+plot(border_dataset,axes=F, #"burlywood4",
+panel.first=rect(par("usr")[1],par("usr")[3],par("usr")[2],par("usr")[4]))
+plot(Not_intr,add=T,col="gray93")
+plot(Intr,add=T,col="forestgreen")
+plot(Inv,add=T,col=Inv@data$color)
+# for (j in init_nodes) points(subset(node_shp_sub,Knoten_Num%in%j),pch=1,cex=1,col="blue",lwd=2)
+# mtext(t,side=3,line=-2)
+legend("topleft",c(paste0("Iter. #",names(list_results)[i])),box.col = "white",bg = "white")
+plot(border_dataset,axes=F,add=T)
+# legend part
+op <- par(mar=c(0.1,4.5,0.1,0.5))
+num_legend<-40
+color_legend <- rev(c("black","grey93", "forestgreen", colfunc(num_legend)))
+xl <- 1
+yb <- 1
+xr <- 1.5
+yt <- 2
+plot(NA,type="n",ann=FALSE,xlim=c(1,1.6),ylim=c(1,2),xaxt="n",yaxt="n",bty="n")
+rect(
+xl,
+head(seq(yb,yt,(yt-yb)/(num_legend+3)),-1),
+xr,
+tail(seq(yb,yt,(yt-yb)/(num_legend+3)),-1),
+col= color_legend,
+border = color_legend
+)
+mtext(
+c("Administrative border",
+"Species not introduced",
+"Species introduced but not established",
+"Species has invaded with probability = Pinv"),
+side=4,
+at= c(rev(seq(yb,yt,(yt-yb)/(num_legend+3)))-c(1/80))[c(1:4)],
+las=2,cex=0.7)
+mtext(
+paste("Pinv =",seq(1,0,by=-0.1),sep=" "),
+side=2,at= c(seq(yb,yt,(yt-yb)/(num_legend+3))[seq(1,(num_legend+1),by=c(num_legend/10))]),
+las=2,cex=0.7)
+frame()
+#actual map plotting
+op <- par(mar=c(0.1,1,0.1,0.5))
+plot(border_dataset,axes=F, #"burlywood4",
+panel.first=rect(par("usr")[1],par("usr")[3],par("usr")[2],par("usr")[4]))
+plot(Not_intr,add=T,col="gray93")
+plot(Intr,add=T,col="forestgreen")
+plot(Inv,add=T,col=Inv@data$color)
+# for (j in init_nodes) points(subset(node_shp_sub,Knoten_Num%in%j),pch=1,cex=1,col="blue",lwd=2)
+# mtext(t,side=3,line=-2)
+legend("topleft",c(paste0("Iter. #",names(list_results)[i])),box.col = "white",bg = "white")
+plot(border_dataset,axes=F,add=T)
+# legend part
+op <- par(mar=c(0.1,4.5,0.1,0.5))
+num_legend<-40
+color_legend <- rev(c("black","grey93", "forestgreen", colfunc(num_legend)))
+xl <- 1
+yb <- 1
+xr <- 1.5
+yt <- 2
+plot(NA,type="n",ann=FALSE,xlim=c(1,1.6),ylim=c(1,2),xaxt="n",yaxt="n",bty="n")
+rect(
+xl,
+head(seq(yb,yt,(yt-yb)/(num_legend+3)),-1),
+xr,
+tail(seq(yb,yt,(yt-yb)/(num_legend+3)),-1),
+col= color_legend,
+border = color_legend
+)
+mtext(
+c("Administrative border",
+"Species not introduced",
+"Species introduced but not established",
+"Species has invaded with probability = Pinv"),
+side=4,
+at= c(rev(seq(yb,yt,(yt-yb)/(num_legend+3)))-c(1/(2*num_legend)))[c(1:4)],
+las=2,cex=0.7)
+mtext(
+paste("Pinv =",seq(1,0,by=-0.1),sep=" "),
+side=2,at= c(seq(yb,yt,(yt-yb)/(num_legend+3))[seq(1,(num_legend+1),by=c(num_legend/10))]),
+las=2,cex=0.7)
+frame()
+#actual map plotting
+op <- par(mar=c(0.1,1,0.1,0.5))
+plot(border_dataset,axes=F, #"burlywood4",
+panel.first=rect(par("usr")[1],par("usr")[3],par("usr")[2],par("usr")[4]))
+plot(Not_intr,add=T,col="gray93")
+plot(Intr,add=T,col="forestgreen")
+plot(Inv,add=T,col=Inv@data$color)
+# for (j in init_nodes) points(subset(node_shp_sub,Knoten_Num%in%j),pch=1,cex=1,col="blue",lwd=2)
+# mtext(t,side=3,line=-2)
+legend("topleft",c(paste0("Iter. #",names(list_results)[i])),box.col = "white",bg = "white")
+plot(border_dataset,axes=F,add=T)
+# legend part
+op <- par(mar=c(0.1,4.5,0.1,0.5))
+num_legend<-40
+color_legend <- rev(c("black","grey93", "forestgreen", colfunc(num_legend)))
+xl <- 1
+yb <- 1
+xr <- 1.5
+yt <- 2
+plot(NA,type="n",ann=FALSE,xlim=c(1,1.6),ylim=c(1,2),xaxt="n",yaxt="n",bty="n")
+rect(
+xl,
+head(seq(yb,yt,(yt-yb)/(num_legend+3)),-1),
+xr,
+tail(seq(yb,yt,(yt-yb)/(num_legend+3)),-1),
+col= color_legend,
+border = color_legend
+)
+mtext(
+c("Administrative border",
+"Species not introduced",
+"Species introduced but not established",
+"Species has invaded with probability = Pinv"),
+side=4,
+at= c(rev(seq(yb,yt,(yt-yb)/(num_legend+3)))-c(1/(3*num_legend)))[c(1:4)],
+las=2,cex=0.7)
+mtext(
+paste("Pinv =",seq(1,0,by=-0.1),sep=" "),
+side=2,at= c(seq(yb,yt,(yt-yb)/(num_legend+3))[seq(1,(num_legend+1),by=c(num_legend/10))]),
+las=2,cex=0.7)
+frame()
+#actual map plotting
+op <- par(mar=c(0.1,1,0.1,0.5))
+plot(border_dataset,axes=F, #"burlywood4",
+panel.first=rect(par("usr")[1],par("usr")[3],par("usr")[2],par("usr")[4]))
+plot(Not_intr,add=T,col="gray93")
+plot(Intr,add=T,col="forestgreen")
+plot(Inv,add=T,col=Inv@data$color)
+# for (j in init_nodes) points(subset(node_shp_sub,Knoten_Num%in%j),pch=1,cex=1,col="blue",lwd=2)
+# mtext(t,side=3,line=-2)
+legend("topleft",c(paste0("Iter. #",names(list_results)[i])),box.col = "white",bg = "white")
+plot(border_dataset,axes=F,add=T)
+# legend part
+op <- par(mar=c(0.1,4.5,0.1,0.5))
+num_legend<-50
+color_legend <- rev(c("black","grey93", "forestgreen", colfunc(num_legend)))
+xl <- 1
+yb <- 1
+xr <- 1.5
+yt <- 2
+plot(NA,type="n",ann=FALSE,xlim=c(1,1.6),ylim=c(1,2),xaxt="n",yaxt="n",bty="n")
+rect(
+xl,
+head(seq(yb,yt,(yt-yb)/(num_legend+3)),-1),
+xr,
+tail(seq(yb,yt,(yt-yb)/(num_legend+3)),-1),
+col= color_legend,
+border = color_legend
+)
+mtext(
+c("Administrative border",
+"Species not introduced",
+"Species introduced but not established",
+"Species has invaded with probability = Pinv"),
+side=4,
+at= c(rev(seq(yb,yt,(yt-yb)/(num_legend+3)))-c(1/(3*num_legend)))[c(1:4)],
+las=2,cex=0.7)
+mtext(
+paste("Pinv =",seq(1,0,by=-0.1),sep=" "),
+side=2,at= c(seq(yb,yt,(yt-yb)/(num_legend+3))[seq(1,(num_legend+1),by=c(num_legend/10))]),
+las=2,cex=0.7)
+frame()
+#actual map plotting
+op <- par(mar=c(0.1,1,0.1,0.5))
+plot(border_dataset,axes=F, #"burlywood4",
+panel.first=rect(par("usr")[1],par("usr")[3],par("usr")[2],par("usr")[4]))
+plot(Not_intr,add=T,col="gray93")
+plot(Intr,add=T,col="forestgreen")
+plot(Inv,add=T,col=Inv@data$color)
+# for (j in init_nodes) points(subset(node_shp_sub,Knoten_Num%in%j),pch=1,cex=1,col="blue",lwd=2)
+# mtext(t,side=3,line=-2)
+legend("topleft",c(paste0("Iter. #",names(list_results)[i])),box.col = "white",bg = "white")
+plot(border_dataset,axes=F,add=T)
+# legend part
+op <- par(mar=c(0.1,4.5,0.1,0.5))
+num_legend<-20
+color_legend <- rev(c("black","grey93", "forestgreen", colfunc(num_legend)))
+xl <- 1
+yb <- 1
+xr <- 1.5
+yt <- 2
+plot(NA,type="n",ann=FALSE,xlim=c(1,1.6),ylim=c(1,2),xaxt="n",yaxt="n",bty="n")
+rect(
+xl,
+head(seq(yb,yt,(yt-yb)/(num_legend+3)),-1),
+xr,
+tail(seq(yb,yt,(yt-yb)/(num_legend+3)),-1),
+col= color_legend,
+border = color_legend
+)
+mtext(
+c("Administrative border",
+"Species not introduced",
+"Species introduced but not established",
+"Species has invaded with probability = Pinv"),
+side=4,
+at= c(rev(seq(yb,yt,(yt-yb)/(num_legend+3)))-c(1/(3*num_legend)))[c(1:4)],
+las=2,cex=0.7)
+mtext(
+paste("Pinv =",seq(1,0,by=-0.1),sep=" "),
+side=2,at= c(seq(yb,yt,(yt-yb)/(num_legend+3))[seq(1,(num_legend+1),by=c(num_legend/10))]),
+las=2,cex=0.7)
+frame()
+#actual map plotting
+op <- par(mar=c(0.1,1,0.1,0.5))
+plot(border_dataset,axes=F, #"burlywood4",
+panel.first=rect(par("usr")[1],par("usr")[3],par("usr")[2],par("usr")[4]))
+plot(Not_intr,add=T,col="gray93")
+plot(Intr,add=T,col="forestgreen")
+plot(Inv,add=T,col=Inv@data$color)
+# for (j in init_nodes) points(subset(node_shp_sub,Knoten_Num%in%j),pch=1,cex=1,col="blue",lwd=2)
+# mtext(t,side=3,line=-2)
+legend("topleft",c(paste0("Iter. #",names(list_results)[i])),box.col = "white",bg = "white")
+plot(border_dataset,axes=F,add=T)
+# legend part
+op <- par(mar=c(0.1,4.5,0.1,0.5))
+num_legend<-40
+color_legend <- rev(c("black","grey93", "forestgreen", colfunc(num_legend)))
+xl <- 1
+yb <- 1
+xr <- 1.5
+yt <- 2
+plot(NA,type="n",ann=FALSE,xlim=c(1,1),ylim=c(1,2),xaxt="n",yaxt="n",bty="n")
+rect(
+xl,
+head(seq(yb,yt,(yt-yb)/(num_legend+3)),-1),
+xr,
+tail(seq(yb,yt,(yt-yb)/(num_legend+3)),-1),
+col= color_legend,
+border = color_legend
+)
+mtext(
+c("Administrative border",
+"Species not introduced",
+"Species introduced but not established",
+"Species has invaded with probability = Pinv"),
+side=4,
+at= c(rev(seq(yb,yt,(yt-yb)/(num_legend+3)))-c(1/(3*num_legend)))[c(1:4)],
+las=2,cex=0.7)
+mtext(
+paste("Pinv =",seq(1,0,by=-0.1),sep=" "),
+side=2,at= c(seq(yb,yt,(yt-yb)/(num_legend+3))[seq(1,(num_legend+1),by=c(num_legend/10))]),
+las=2,cex=0.7)
+frame()
+#actual map plotting
+op <- par(mar=c(0.1,1,0.1,0.5))
+plot(border_dataset,axes=F, #"burlywood4",
+panel.first=rect(par("usr")[1],par("usr")[3],par("usr")[2],par("usr")[4]))
+plot(Not_intr,add=T,col="gray93")
+plot(Intr,add=T,col="forestgreen")
+plot(Inv,add=T,col=Inv@data$color)
+# for (j in init_nodes) points(subset(node_shp_sub,Knoten_Num%in%j),pch=1,cex=1,col="blue",lwd=2)
+# mtext(t,side=3,line=-2)
+legend("topleft",c(paste0("Iter. #",names(list_results)[i])),box.col = "white",bg = "white")
+plot(border_dataset,axes=F,add=T)
+# legend part
+op <- par(mar=c(0.1,4.5,0.1,0.5))
+num_legend<-40
+color_legend <- rev(c("black","grey93", "forestgreen", colfunc(num_legend)))
+xl <- 1
+yb <- 1
+xr <- 1.5
+yt <- 2
+plot(NA,type="n",ann=FALSE,xlim=c(1,1.2),ylim=c(1,2),xaxt="n",yaxt="n",bty="n")
+rect(
+xl,
+head(seq(yb,yt,(yt-yb)/(num_legend+3)),-1),
+xr,
+tail(seq(yb,yt,(yt-yb)/(num_legend+3)),-1),
+col= color_legend,
+border = color_legend
+)
+mtext(
+c("Administrative border",
+"Species not introduced",
+"Species introduced but not established",
+"Species has invaded with probability = Pinv"),
+side=4,
+at= c(rev(seq(yb,yt,(yt-yb)/(num_legend+3)))-c(1/(3*num_legend)))[c(1:4)],
+las=2,cex=0.7)
+mtext(
+paste("Pinv =",seq(1,0,by=-0.1),sep=" "),
+side=2,at= c(seq(yb,yt,(yt-yb)/(num_legend+3))[seq(1,(num_legend+1),by=c(num_legend/10))]),
+las=2,cex=0.7)
+frame()
+#actual map plotting
+op <- par(mar=c(0.1,1,0.1,0.5))
+plot(border_dataset,axes=F, #"burlywood4",
+panel.first=rect(par("usr")[1],par("usr")[3],par("usr")[2],par("usr")[4]))
+plot(Not_intr,add=T,col="gray93")
+plot(Intr,add=T,col="forestgreen")
+plot(Inv,add=T,col=Inv@data$color)
+# for (j in init_nodes) points(subset(node_shp_sub,Knoten_Num%in%j),pch=1,cex=1,col="blue",lwd=2)
+# mtext(t,side=3,line=-2)
+legend("topleft",c(paste0("Iter. #",names(list_results)[i])),box.col = "white",bg = "white")
+plot(border_dataset,axes=F,add=T)
+# legend part
+op <- par(mar=c(0.1,4.5,0.1,0.5))
+num_legend<-40
+color_legend <- rev(c("black","grey93", "forestgreen", colfunc(num_legend)))
+xl <- 1
+yb <- 1
+xr <- 1.5
+yt <- 2
+plot(NA,type="n",ann=FALSE,xlim=c(1,1.6),ylim=c(1,2),xaxt="n",yaxt="n",bty="n")
+rect(
+xl,
+head(seq(yb,yt,(yt-yb)/(num_legend+3)),-1),
+xr,
+tail(seq(yb,yt,(yt-yb)/(num_legend+3)),-1),
+col= color_legend,
+border = color_legend
+)
+mtext(
+c("Administrative border",
+"Species not introduced",
+"Species introduced but not established",
+"Species has invaded with probability = Pinv"),
+side=4,
+at= c(rev(seq(yb,yt,(yt-yb)/(num_legend+3)))-c(1/(3*num_legend)))[c(1:4)],
+las=2,cex=0.7)
+mtext(
+paste("Pinv =",seq(1,0,by=-0.1),sep=" "),
+side=2,at= c(seq(yb,yt,(yt-yb)/(num_legend+3))[seq(1,(num_legend+1),by=c(num_legend/10))]),
+las=2,cex=0.7)
+frame()
+#actual map plotting
+op <- par(mar=c(0.1,1,0.1,0.5))
+plot(border_dataset,axes=F, #"burlywood4",
+panel.first=rect(par("usr")[1],par("usr")[3],par("usr")[2],par("usr")[4]))
+plot(Not_intr,add=T,col="gray93")
+plot(Intr,add=T,col="forestgreen")
+plot(Inv,add=T,col=Inv@data$color)
+# for (j in init_nodes) points(subset(node_shp_sub,Knoten_Num%in%j),pch=1,cex=1,col="blue",lwd=2)
+# mtext(t,side=3,line=-2)
+legend("topleft",c(paste0("Iter. #",names(list_results)[i])),box.col = "white",bg = "white")
+plot(border_dataset,axes=F,add=T)
+# legend part
+op <- par(mar=c(0.1,4.5,0.1,0.5))
+num_legend<-40
+color_legend <- rev(c("black","grey93", "forestgreen", colfunc(num_legend)))
+xl <- 1
+yb <- 1
+xr <- 1.5
+yt <- 2
+plot(NA,type="n",ann=FALSE,xlim=c(1,2),ylim=c(1,2),xaxt="n",yaxt="n",bty="n")
+rect(
+xl,
+head(seq(yb,yt,(yt-yb)/(num_legend+3)),-1),
+xr,
+tail(seq(yb,yt,(yt-yb)/(num_legend+3)),-1),
+col= color_legend,
+border = color_legend
+)
+mtext(
+c("Administrative border",
+"Species not introduced",
+"Species introduced but not established",
+"Species has invaded with probability = Pinv"),
+side=4,
+at= c(rev(seq(yb,yt,(yt-yb)/(num_legend+3)))-c(1/(3*num_legend)))[c(1:4)],
+las=2,cex=0.7)
+mtext(
+paste("Pinv =",seq(1,0,by=-0.1),sep=" "),
+side=2,at= c(seq(yb,yt,(yt-yb)/(num_legend+3))[seq(1,(num_legend+1),by=c(num_legend/10))]),
+las=2,cex=0.7)
+frame()
+dev.off()
+x11(width=11,height = 8)
+layout(matrix(1:3,nrow=1),widths=c(0.6,0.15,0.25))
+#actual map plotting
+op <- par(mar=c(0.1,1,0.1,0.5))
+plot(border_dataset,axes=F, #"burlywood4",
+panel.first=rect(par("usr")[1],par("usr")[3],par("usr")[2],par("usr")[4]))
+plot(Not_intr,add=T,col="gray93")
+plot(Intr,add=T,col="forestgreen")
+plot(Inv,add=T,col=Inv@data$color)
+# for (j in init_nodes) points(subset(node_shp_sub,Knoten_Num%in%j),pch=1,cex=1,col="blue",lwd=2)
+# mtext(t,side=3,line=-2)
+legend("topleft",c(paste0("Iter. #",names(list_results)[i])),box.col = "white",bg = "white")
+plot(border_dataset,axes=F,add=T)
+# legend part
+op <- par(mar=c(0.1,4.5,0.1,0.5))
+num_legend<-40
+color_legend <- rev(c("black","grey93", "forestgreen", colfunc(num_legend)))
+xl <- 1
+yb <- 1
+xr <- 1.5
+yt <- 2
+plot(NA,type="n",ann=FALSE,xlim=c(1,1.8),ylim=c(1,2),xaxt="n",yaxt="n",bty="n")
+rect(
+xl,
+head(seq(yb,yt,(yt-yb)/(num_legend+3)),-1),
+xr,
+tail(seq(yb,yt,(yt-yb)/(num_legend+3)),-1),
+col= color_legend,
+border = color_legend
+)
+mtext(
+c("Administrative border",
+"Species not introduced",
+"Species introduced but not established",
+"Species has invaded with probability = Pinv"),
+side=4,
+at= c(rev(seq(yb,yt,(yt-yb)/(num_legend+3)))-c(1/(3*num_legend)))[c(1:4)],
+las=2,cex=0.7)
+mtext(
+paste("Pinv =",seq(1,0,by=-0.1),sep=" "),
+side=2,at= c(seq(yb,yt,(yt-yb)/(num_legend+3))[seq(1,(num_legend+1),by=c(num_legend/10))]),
+las=2,cex=0.7)
+frame()
+#actual map plotting
+op <- par(mar=c(0.1,1,0.1,0.5))
+plot(border_dataset,axes=F, #"burlywood4",
+panel.first=rect(par("usr")[1],par("usr")[3],par("usr")[2],par("usr")[4]))
+plot(Not_intr,add=T,col="gray93")
+plot(Intr,add=T,col="forestgreen")
+plot(Inv,add=T,col=Inv@data$color)
+# for (j in init_nodes) points(subset(node_shp_sub,Knoten_Num%in%j),pch=1,cex=1,col="blue",lwd=2)
+# mtext(t,side=3,line=-2)
+legend("topleft",c(paste0("Iter. #",names(list_results)[i])),box.col = "white",bg = "white")
+plot(border_dataset,axes=F,add=T)
+# legend part
+op <- par(mar=c(0.1,4.5,0.1,0.5))
+num_legend<-40
+color_legend <- rev(c("black","grey93", "forestgreen", colfunc(num_legend)))
+xl <- 1
+yb <- 1
+xr <- 1.5
+yt <- 2
+plot(NA,type="n",ann=FALSE,xlim=c(1,1.7),ylim=c(1,2),xaxt="n",yaxt="n",bty="n")
+rect(
+xl,
+head(seq(yb,yt,(yt-yb)/(num_legend+3)),-1),
+xr,
+tail(seq(yb,yt,(yt-yb)/(num_legend+3)),-1),
+col= color_legend,
+border = color_legend
+)
+mtext(
+c("Administrative border",
+"Species not introduced",
+"Species introduced but not established",
+"Species has invaded with probability = Pinv"),
+side=4,
+at= c(rev(seq(yb,yt,(yt-yb)/(num_legend+3)))-c(1/(3*num_legend)))[c(1:4)],
+las=2,cex=0.7)
+mtext(
+paste("Pinv =",seq(1,0,by=-0.1),sep=" "),
+side=2,at= c(seq(yb,yt,(yt-yb)/(num_legend+3))[seq(1,(num_legend+1),by=c(num_legend/10))]),
+las=2,cex=0.7)
+frame()
+library(AlienSpeciesDispersalModel)
+source('~/GitHub/AlienSpeciesSpread/Scripts/InitializationScript.R', encoding = 'UTF-8', echo=TRUE)
+source('~/GitHub/AlienSpeciesSpread/Scripts/InitializationScript.R', encoding = 'UTF-8', echo=TRUE)
+library(AlienSpeciesDispersalModel)
+plotResults(list_results = modelResults,shapeObj = roads_dataset,
+save_dir = "C:\Users\mbagnara\Desktop\BiK-F postDoc\Model\31-Aug-2018 22-52-41")
+plotResults(list_results = modelResults,shapeObj = roads_dataset,
+save_dir = "C:/Users\mbagnara\Desktop\BiK-F postDoc\Model\31-Aug-2018 22-52-41")
+plotResults(list_results = modelResults,shapeObj = roads_dataset,
+save_dir = "C:/Users/mbagnara/Desktop/BiK-F postDoc/Model/31-Aug-2018 22-52-41")
+source('~/GitHub/AlienSpeciesSpread/Scripts/InitializationScript.R', encoding = 'UTF-8', echo=TRUE)
+setwd("C:/Users/mbagnara/Desktop/BiK-F postDoc/Model/31-Aug-2018 22-58-57")
+system("C:/ImageMagick-7.0.8-Q16/convert.exe -delay 80 *.png ModelSpread.gif")
+setwd(mainDir)
+library(AlienSpeciesDispersalModel)
+bbx <- rgeos::readWKT("POLYGON((0 40, 20 40, 20 0, 0 0, 0 40))")
+?readWKT
+library(rgeos)
+rivers <- readWKT("MULTILINESTRING((15 5, 1 20, 200 25), (-5 -8,-10 -8,-15 -4), (0 10,100 5,20 230))")
+bbx <- readWKT("POLYGON((0 40, 20 40, 20 0, 0 0, 0 40))")
+rivers.cut <- gIntersection(rivers, bbx)
+plot(rivers, col="grey")
+plot(bbx, add=T, lty=2)
+plot(rivers.cut, add=T, col="blue")
+library(AlienSpeciesDispersalModel)
+plot(roads_dataset)
+install.packages(maps)

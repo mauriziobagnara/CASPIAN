@@ -1,0 +1,273 @@
+# ### CASPIAN CALIBRATION SCRIPT for Senecio
+rm(list=ls())
+graphics.off()
+library(CASPIAN)
+library(BayesianTools)
+library(foreach)
+library(doParallel)
+library(PresenceAbsence)
+
+mainDir<-"~/AUC/Senecio2nd_UnifPrior_NoPallets/"
+# mainDir<-"/home/hanno/Bioinvasion/EBAspread/Model"
+setwd(mainDir)
+unlink(dir(mainDir, pattern = "CASPIAN_", full.names = TRUE), recursive = TRUE)
+
+load("PreCalibration.Rdata")
+
+# build parameter matrix
+parameters<-matrix(c(par_att0_Roads,par_att0_Railways,par_att1,par_att2,par_att3,
+                     par_air0_Roads,par_air0_Railways,par_air1,par_air2,
+                     par_nat1,par_nat2,par_est_T,par_cont,par_pall,
+                     par_mobile_proportion,par_stat_speed,par_mob_speed,
+                     par_a,par_c1,par_g,par_c2,par_b,par_c3,par_est_W
+),nrow=1,byrow=T)
+colnames(parameters)<-c("S_att0", "R_att0","att1","att2","att3","S_air0","R_air0", "air1","air2","nat1","nat2","estT","cont1","pall1",
+                        "mob_prop","stat_speed","mob_speed","alpha","c1","gamma","c2","beta","c3","estW")
+
+# get default values
+defaultValues <- parameters
+
+#select which parameters to calibrate
+parNames <- c("S_att0", "R_att0","att1","att2","att3","S_air0","R_air0", "air1","air2","nat1","nat2",
+              "estT")
+
+parSel <- c()
+for (i in parNames) parSel <- c(parSel, grep(i, colnames(defaultValues)))
+parValues <- c(defaultValues[parSel])
+
+npar <- length(parValues)
+
+# for (i in ls()[grep("errpar", ls())]) defaultValues <- c(defaultValues, get(i))  #Commented, avoid likelihood sd if possible
+
+# get calibrated parameters range
+parRange<-data.frame(name=parNames,
+                     min= c(0,0,0,-0.176874,0,
+                          0,0,-1.22,0.38,
+                            0,0.0001,
+                            .005),
+                     max= c(10^-5,10^-4,1,-0.000110, 1,
+                            0.1,0.1,2.35, 0.8,
+                            5, 1,
+                            .99)
+                     )
+
+# for (i in rownames(parameterStandard)) {
+#   defaultValues[i] <- parameterStandard[rownames(parameterStandard) ==
+#                                           i]
+# }
+
+#define prior range
+PriorRange<-data.frame(name=parNames,
+                       min_range=parRange$min[parRange$name%in%parNames],
+                       default=parValues,
+                       max_range=parRange$max[parRange$name%in%parNames])
+
+# build priors
+
+prior.min <- c()
+prior.max <- c()
+
+for (i in 1:npar) {
+  prior.min[i] <- c(PriorRange$min_range[which(PriorRange$name ==
+                                                 parNames[i])])
+  prior.max[i] <- c(PriorRange$max_range[which(PriorRange$name ==
+                                                 parNames[i])])
+}
+
+# prior <- createUniformPrior(lower = prior.min, upper = prior.max, best = parValues)
+ ms<-apply(cbind(PriorRange$min_range,PriorRange$max_range),1,median)
+ prior <- createTruncatedNormalPrior(lower = prior.min, upper = prior.max,
+                                     mean = parValues, sd= abs(ms*0.2)
+             )
+
+#define likelihood function -AUC based
+Auc_CASPIAN <- function(pars) {
+  #  pars<-BCsetup$prior$sampler(1)
+  if (is.vector(pars))  pars = matrix(pars, nrow = 1)
+
+  p <- matrix(NA, nrow = nrow(pars), ncol = length(defaultValues))
+
+  for (i in 1:nrow(pars)) p[i, ] <- suppressWarnings(createMixWithDefaults(pars[i,
+                                                                                            1:ncol(pars)], defaultValues, parSel)
+  )
+  colnames(p) <- colnames(defaultValues)
+  # nerr <- length(grep("errpar", colnames(p)))
+
+  # pars <- p[, -tail(1:ncol(p), nerr)]
+  # ifelse(is.matrix(pars), yes = pars <- ListPar(pars),
+  #        no = pars <- ListPar(t(as.matrix(pars))))
+
+  # ifelse(parallelOption == FALSE, yes = parameterList <- pars[[1]],
+  #        no = parameterList <- pars)
+  #
+load(init_file)
+
+  invisible(capture.output(
+    outputCASPIAN <- SpreadModel(parameters=p,init_obj=init_obj,
+                                 Terrestrial_netw_data=Terrestrial_netw_data,
+                                 Commodities_shape_data=Commodities_shape_data,
+                                 Pallets_netw_data=Pallets_netw_data,
+                                 Container_netw_data=Container_netw_data,
+                                 netw_type=netw_type,traffic_type=traffic_type_T,
+                                 init_coords=init_coords_T, num_iter=num_iter_T,max_dist = max_dist_T,
+                                 incl_attachment=incl_attachment,incl_airflow=incl_airflow, incl_natural=incl_natural,
+                                 incl_containers=incl_containers,incl_pallets=incl_pallets,
+                                 Cont_treshold=Cont_treshold,Pall_threshold=Pall_treshold,
+                                 species_preferences=species_preferences,
+                                 iter_save = num_iter_T,plot_funct_rel=plot_funct_rel
+    )
+  ))
+
+  #
+  # if (parallelOption == FALSE) {
+  #   parameterList <- pars
+  #   outputLPJ <- list(outputLPJ)
+  #
+  nruns <- 1
+  # } else nruns <- length(parameterList)
+  #
+  AUCs <- c()
+
+  for (nparticles in 1:nruns) {
+    AUC <- NA
+    for (nsteps in 1:length(outputCASPIAN)){
+
+      predicted <- outputCASPIAN[[nsteps]][,c("ID","Pinv")]
+      observed <- InvasionData[[nsteps]]
+      llobj <- merge(observed, predicted, by = "ID")
+      
+      assign(x="llobj",value = llobj,envir = .GlobalEnv)
+      
+      InitLinks<-which(llobj$ID%in%init_obj$init_segm) 
+      if (length(InitLinks)!=0) { llobj<-llobj[-InitLinks,]}
+      
+#     AUC here
+      colnames(llobj)<-c("ID","Observed","CASPIAN")
+     
+      
+      AUC<-presence.absence.accuracy(llobj, threshold = 0.5, find.auc = TRUE, st.dev = FALSE, which.model=1,na.rm = T)$PCC
+       
+      AUC<-c((AUC-1)*100)
+
+    }
+
+    AUCs[nparticles] <- AUC
+  }
+
+  unlink(dir(mainDir, pattern = "CASPIAN_", full.names = TRUE), recursive = TRUE)
+  sink("AUCs.txt",append = TRUE)
+  print(AUCs)
+  sink()
+  
+  return(AUCs)
+
+}
+
+#create BCsetup and define calibration settings
+numChains<-3
+numInternalParallel<-3
+
+iterations = 10^5
+BCsetup <- createBayesianSetup(Auc_CASPIAN, prior,
+                               parallel = numInternalParallel, names = parNames)
+
+start <- BCsetup$prior$sampler(9)
+colnames(start) <- parNames
+DEStart <- list(start[1:3, ] , start[4:6, ], start[7:9,])
+
+
+#run calibration
+cat("\n Calibration started ", as.character(Sys.time()) , "\n")
+T1<-proc.time()
+
+numCores<-numChains*numInternalParallel
+
+cl <- makeCluster(numCores, type = "SOCK")
+registerDoParallel(cl)
+
+resDREAMparallel<-foreach(n = 1:numChains, .packages = c("CASPIAN","BayesianTools","PresenceAbsence") ) %dopar% {
+
+  BCsetup <- createBayesianSetup(Auc_CASPIAN, prior, parallel = numInternalParallel, names = parNames)
+
+  # BCsettings <- list(iterations = iterations, nrChains = 1,
+  #                    startValue = DEStart[[n]], consoleUpdates = 1)
+  sink(paste0("ChainNr",n,".txt"))
+  res <- runMCMC(BCsetup,
+                 sampler = "DREAMzs", settings = list(iterations = iterations, nrChains = 1,
+                                                   startValue = DEStart[[n]], consoleUpdates = 1))
+  sink()
+  return(res)
+}
+stopCluster(cl)
+
+resDREAM<-createMcmcSamplerList(list(resDREAMparallel[[1]],resDREAMparallel[[2]],resDREAMparallel[[3]]))
+
+# sink("ChainNr1.txt")
+# resDREAM <- runMCMC(BCsetup,
+#                sampler = "DREAMzs", settings = list(iterations = iterations, nrChains = numChains, startValue = DEStart[[1]], consoleUpdates = 1))
+# sink()
+
+T2<-proc.time()
+cat("\n Calibration completed ", as.character(Sys.time()) , "\n")
+print(T2-T1)
+
+cat("\n Calculating Maximum AUC model output \n")
+bestPars<- suppressWarnings(createMixWithDefaults(t(as.matrix(MAP(resDREAM)$parametersMAP)), defaultValues, parSel))
+load(init_file)
+outputCASPIAN <- SpreadModel(parameters=bestPars,init_obj=init_obj,
+                             Terrestrial_netw_data=Terrestrial_netw_data,
+                             Commodities_shape_data=Commodities_shape_data,
+                             Pallets_netw_data=Pallets_netw_data,
+                             Container_netw_data=Container_netw_data,
+                             netw_type=netw_type,traffic_type=traffic_type_T,
+                             init_coords=init_coords_T, num_iter=num_iter_T,max_dist = max_dist_T,
+                             incl_attachment=incl_attachment,incl_airflow=incl_airflow, incl_natural=incl_natural,
+                             incl_containers=incl_containers,incl_pallets=incl_pallets,
+                             Cont_treshold=Cont_treshold,Pall_threshold=Pall_treshold,
+                             species_preferences=species_preferences,
+                             iter_save = iter_save_T,plot_funct_rel=plot_funct_rel
+)
+
+save.image("CalibrationResults.rData")
+
+cat("\n Plotting Results \n")
+#plotResults(list_results = outputCASPIAN,shapeObj = SenecioRoad[SenecioRoad@data$Typ%in%netw_type,],save_plot = TRUE,save_dir = mainDir)
+
+pdf("traceplot.pdf",width = 7,height = 10)
+plot(resDREAM,parametersOnly=FALSE)
+dev.off()
+pdf("correlationplot.pdf",width = 7,height = 10)
+correlationPlot(resDREAM)
+dev.off()
+sink("ResultSummary.txt")
+summary(resDREAM)
+sink()
+pdf("PriorsVsPosteriors.pdf",width = 10,height = 10)
+par(mfrow=c(3,3))
+SampleChain<-getSample(resDREAM,parametersOnly = TRUE,numSamples = 1000)
+SamplePrior<-BCsetup$prior$sampler(1000)
+for (i in 1:npar) {
+  densPrior<-density(SamplePrior[,i])
+  densChain<-density(SampleChain[,i])
+  hist(SamplePrior[,i],main=parNames[i],freq = FALSE,
+       border = "white",
+       xlab="Parameter value",
+       xlim=c(BCsetup$prior$lower[i],BCsetup$prior$upper[i]),ylim=c(0,max(c(densChain$y,densPrior$y))))
+  lines(densPrior$y~densPrior$x)
+  lines(densChain$y~densChain$x,col="red")
+}
+dev.off()
+
+pdf("GoodnessOfFit.pdf",width = 7,height = 7)
+predicted <- outputCASPIAN[[tail(names(outputCASPIAN),1)]][,c("ID","Pinv")]
+observed <- InvasionData[[tail(names(outputCASPIAN),1)]]
+GoF <- merge(observed, predicted, all = FALSE,
+               by = "ID")
+colnames(GoF)<-c("ID","Observed","CASPIAN")
+
+calibration.plot(GoF, which.model = 1, color = "red", main = ncol(GoF)[3])
+dev.off()
+
+cat("\n Done \n")
+
+
