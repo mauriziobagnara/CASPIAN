@@ -9,7 +9,7 @@ runCASPIAN<-function(configFile){
                        par_air0_Roads,par_air0_Railways,par_air1,par_air2,
                        par_nat1,par_nat2,par_est_T,par_cont,par_pall,
                        par_nat_a,par_nat_b,par_ball,
-                       par_a,par_c1,par_g,par_c2,par_b,par_c3,par_est_W
+                       par_hull0,par_a,par_c1,par_g,par_c2,par_b,par_c3,par_est_W
                        )
 
   modelResults<-list()
@@ -148,18 +148,18 @@ if (runAquaticModel==TRUE){
     for (i in names(AquaticModelResults)){
       shp<-init_water_data$water_shp
       shp@data<-AquaticModelResults[[i]]
-      writeOGR(shp, dsn=file.path(dir.name_T, paste("AquaticModelResults_",i)), layer="Aquatic_network", driver="ESRI Shapefile")}
+      writeOGR(shp, dsn=file.path(dir.name_W, paste("AquaticModelResults_",i)), layer="Aquatic_network", driver="ESRI Shapefile")}
   }
 }
 
 if (makeplot) {
   if (runTerrestrialModel==TRUE){
     cat("\n Creating Terrestrial maps \n")
-  plotResults(list_results=TerrestrialModelResults,shapeObj=init_obj$roads_shp,save_plot=save_plot,save_dir=dir.name_T)
+  plotResults(list_results=TerrestrialModelResults,shapeObj=init_obj$roads_shp,variable="Pinv", save_plot=save_plot,save_dir=dir.name_T)
     }
   if (runAquaticModel==TRUE){
     cat("\n Creating Aquatic maps \n")
-  plotResults(list_results=AquaticModelResults,shapeObj=init_water_data$water_shp,save_plot=save_plot,save_dir=dir.name_W)
+  plotResults(list_results=AquaticModelResults,shapeObj=init_water_data$water_shp,variable="Pinv",save_plot=save_plot,save_dir=dir.name_W)
   }
 }
 

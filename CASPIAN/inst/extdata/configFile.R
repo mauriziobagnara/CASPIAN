@@ -116,6 +116,7 @@ par_nat_b<- 2.5 #  shape parameter for Gammarus spp (Elliot 2003, Tab.1)
 
 
 #hull-fouling: see Sylvester 2011, eq. 9
+par_hull0 <- 0.000001 ## pick-up probability
 par_a <-5.85 * 10^-20
 par_c1 <-20.9
 par_g <-1.03 * 10^-10

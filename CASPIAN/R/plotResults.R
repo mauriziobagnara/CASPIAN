@@ -1,4 +1,4 @@
-plotResults<-function(list_results,shapeObj,save_plot,save_dir){
+plotResults<-function(list_results,shapeObj,variable,save_plot,save_dir){
   #  border_shp <- readOGR(dsn=file.path(dir_data,"gadm36_DEU_shp"),layer="gadm36_DEU_1",stringsAsFactors = F)
   num_col<-5
   #create palette
@@ -15,7 +15,7 @@ plotResults<-function(list_results,shapeObj,save_plot,save_dir){
     time_plot<-proc.time()
 
     shapeObj@data <- copy(list_results[[i]])
-
+    colNum<-which(colnames(shapeObj@data)==variable)
     # Combine probabilities of invasion in both directions
     CombList<-list()
     already<-c()
@@ -24,7 +24,7 @@ plotResults<-function(list_results,shapeObj,save_plot,save_dir){
         x<-shapeObj[shapeObj$ID==i,]
         y<-shapeObj[shapeObj$FromNode==x$ToNode & shapeObj$ToNode==x$FromNode,]
         z<-rbind(x,y)
-        z@data$Pinv<-pUnion(z@data$Pinv)
+        z@data[,colNum]<-pUnion(z@data[,colNum])
         already<-c(already,z@data$ID)
         CombList<-append(CombList,z)
       }
@@ -33,7 +33,7 @@ plotResults<-function(list_results,shapeObj,save_plot,save_dir){
 
 
     # get color palette here
-    shapeObj@data$norm <- as.character(round(shapeObj@data$Pinv,num_col))
+    shapeObj@data$norm <- as.character(round(shapeObj@data[,colNum],num_col))
 
     shapeObj@data<-merge(shapeObj@data,pal,by="norm",all.x=TRUE,sort=FALSE)
 
@@ -82,7 +82,7 @@ plotResults<-function(list_results,shapeObj,save_plot,save_dir){
      border = color_legend
    )
    text(x=c(xl-0.1), y = seq(yt,yb,length.out = c(num_legend+1))[c(1,seq(2,c(num_legend+1),length.out = 11))],adj = 1,
-        labels = c("Not invaded",paste(" Pinv =",seq(0,1,by=0.1),sep=" ")),cex=.9)
+        labels = c("Prob = 0",paste(variable, "=",seq(0,1,by=0.1),sep=" ")),cex=.9)
    # mtext(
    #   paste("Pinv =",seq(1,0,by=-0.1),sep=" "),
    #   side=2,at= c(seq(yb,yt,(yt-yb)/(num_legend+1))[seq(1,(num_legend+1),by=c(num_legend/10))]),
@@ -110,4 +110,4 @@ plotResults<-function(list_results,shapeObj,save_plot,save_dir){
 }
 
 
-#plotResults(list_results = results[3],shapeObj = Road_Railway_Network[Road_Railway_Network@data$Typ%in%netw_type,],save_plot = FALSE)
+#plotResults(list_results = results[3],shapeObj = Road_Railway_Network[Road_Railway_Network@data$Typ%in%netw_type,],variable="Pinv",save_plot = FALSE)
