@@ -1,5 +1,5 @@
 InitializeSpread<-function(Terrestrial_netw_data,Commodities_shape_data,
-                           Pallets_netw_data,Container_netw_data,
+                           Pallets_netw_data,Container_netw_data,env_terrestrial,
                            file_init="init_data.Rdata",save_init=TRUE,netw_type=c("all"),
                            dir_data=NULL, netw_data=NULL,Rdata_file=NULL,init_coords,max_dist,save_dir,
                            species_preferences,traffic_type=c("all"),
@@ -13,7 +13,7 @@ InitializeSpread<-function(Terrestrial_netw_data,Commodities_shape_data,
   ### load road and railway network file #############################
 
   cat("\n Loading network \n")
-  roads_shp<-Terrestrial_netw_data
+  roads_shp<-readOGR(dsn=paste(getwd(),"/data",sep=""),layer=gsub("\\.shp","",Terrestrial_netw_data))
 
   colnames(roads_shp@data) <- c("FromNode","ToNode","Type","Length","cargo","passengers", "ID")
 
@@ -162,7 +162,8 @@ InitializeSpread<-function(Terrestrial_netw_data,Commodities_shape_data,
   ## Calculate suitability of terrestrial habtitats #############
 
   cat("\n Calculating suitability of habitats \n")
-  fpath<-system.file("extdata", package="CASPIAN")
+  # fpath<-system.file("extdata", package="CASPIAN")
+  fpath<-paste(getwd(),"/data",sep="")
   LCdata <- readRDS(file.path(fpath,"LandCover_RailsRoadsInters_50m.rds"))
   categories <- read.xlsx(file.path(fpath,"clc_legend_categories.xlsx"),sheet=2) # load new categories
   categories <- categories[,c("GRID_CODE","LC_cat_ID")]

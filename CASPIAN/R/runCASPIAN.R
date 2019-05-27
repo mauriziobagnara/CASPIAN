@@ -34,6 +34,7 @@ if(runTerrestrialModel==TRUE){
                                 Commodities_shape_data=Commodities_shape_data,
                                 Pallets_netw_data=Pallets_netw_data,
                                 Container_netw_data=Container_netw_data,
+                                env_terrestrial=env_terrestrial,
                                 init_coords=init_coords_T,max_dist=max_dist_T,
                                 netw_type=netw_type,save_init=save_init, save_dir=dir.name_T,file_init=file_init,
                                 species_preferences=species_preferences,traffic_type=traffic_type_T,

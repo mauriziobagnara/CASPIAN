@@ -11,7 +11,7 @@ InitializeWaterSpread<-function(Water_netw_data,
   tmp2 <- proc.time()
 
   cat("\n Loading network \n")
-  water_shp<-Water_netw_data
+  water_shp<-readOGR(dsn=paste(getwd(),"\\data",sep=""),layer=gsub("\\.shp","",Terrestrial_netw_data))
 
   colnames(water_shp@data) <- c("FromNode","ToNode","Motorized", "Non_motorized","Length","ID","Order","CargoToNode",   "velocity","River","Flow", "RiverSegm", "Temperature","Conductivity")
 
