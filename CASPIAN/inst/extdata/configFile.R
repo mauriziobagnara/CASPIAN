@@ -141,7 +141,12 @@ par_nat_a<- 6.104603e+00 # scale parameter for Gammarus spp (Elliot 2003, Tab.1)
 par_nat_b<- 3.483644e+00 # shape parameter for Gammarus spp (Elliot 2003, Tab.1)
 
 
+<<<<<<< HEAD
 ## Introduction through hull-fouling: see Sylvester 2011, eq. 9
+=======
+#hull-fouling: see Sylvester 2011, eq. 9
+par_hull0 <- 0.000001 ## pick-up probability
+>>>>>>> master
 par_a <-5.85 * 10^-20
 par_c1 <-20.9
 par_g <-1.03 * 10^-10

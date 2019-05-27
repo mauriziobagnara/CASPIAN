@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1556534835889.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3968578321",
+    "id" : "2A6F46C9",
+    "lastKnownWriteTime" : 1556536499,
+    "last_content_update" : 1556536499733,
+    "path" : "~/GitHub/CASPIAN/CASPIAN/R/runCASPIAN.R",
+    "project_path" : "R/runCASPIAN.R",
+    "properties" : {
+        "cursorPosition" : "150,44",
+        "scrollLine" : "0"
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
