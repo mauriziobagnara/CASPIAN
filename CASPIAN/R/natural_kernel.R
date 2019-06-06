@@ -9,7 +9,7 @@
 #'
 #' @keywords CASPIAN
 #' @author Maurizio Bagnara, Hanno Seebens
-#' @examples {
+#' @examples
 #' #generating vector of distances, in Km:
 #' dist<-seq(from=0.1,to=10,length.out=100)
 #'
@@ -21,11 +21,11 @@
 #' natDisp<-f_natural(D = dist,a = par_a, b = par_b)
 #' plot(natDisp~D,xlab="Distance (Km)", ylab="Probability", pch=16)
 #'
-#'  }
-#'  @references {
-#'  Gonzàlez-Martìnez, S. C., Burczyk, J., Nathan, R. A. N., Nanos, N., Gil, L., & Alia, R. (2006). Effective gene dispersal and female reproductive success in Mediterranean maritime pine (Pinus pinaster Aiton). Molecular Ecology, 15(14), 4577-4588.
-#'  Nathan, R., Klein, E. K., Robledo-Arnuncio, J. J., & Revilla, E. (2012). Dispersal kernels. In Dispersal ecology and evolution (pp. 187-210). Oxford: Oxford University Press.
-#'  }
+#'
+#' @references
+#' Gonzàlez-Martìnez, S. C., Burczyk, J., Nathan, R. A. N., Nanos, N., Gil, L., & Alia, R. (2006). Effective gene dispersal and female reproductive success in Mediterranean maritime pine (Pinus pinaster Aiton). Molecular Ecology, 15(14), 4577-4588.
+#' Nathan, R., Klein, E. K., Robledo-Arnuncio, J. J., & Revilla, E. (2012). Dispersal kernels. In Dispersal ecology and evolution (pp. 187-210). Oxford: Oxford University Press.
+#'
 #'
 
 ## natural dispersal kernel. Models dispersal due tonatural processes between nodes.

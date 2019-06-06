@@ -6,7 +6,7 @@
 
 #' @keywords CASPIAN
 #' @author Maurizio Bagnara, Hanno Seebens
-#' @examples {
+#' @examples
 #' # define probability for 3 events:
 #' p1<- 0.3
 #' p2<- 0.6
@@ -16,7 +16,7 @@
 #' # calculate the combined probability of event 1 happening, OR event 2, OR event 3, OR Events 1 AND 2 etc.
 #' CombProb<-pUnion(prob)
 #' print(CombProb)
-#' #'  }
+#'
 #'
 
 pUnion<-function(p)  1 - prod(1-p)

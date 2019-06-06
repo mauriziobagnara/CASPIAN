@@ -43,7 +43,7 @@ SpreadModel <- function(parameters,init_obj,
                         Pallets_netw_data,Container_netw_data,
                         dir_data=NULL, netw_data=NULL,Rdata_file=NULL,init_coords, num_iter,
                         incl_attachment=T,incl_airflow=T,incl_natural=T,
-                        incl_containers=T,Cont_treshold=0,
+                        incl_containers=T,Cont_threshold=0,
                         incl_pallets=T,Pall_threshold=0,
                         #species_preferences,
                         max_dist,
@@ -208,7 +208,7 @@ SpreadModel <- function(parameters,init_obj,
     # caculate probability of establishment for terrestrial habitats
 
     cat("\n Calculating Probability of Establishment for each segment \n")
-    road_netw[,Pe:=parameters[nparset,"estT"]*LCsuit] # parameter for scaling down probability of establishment # new
+    road_netw[,Pe:=parameters[nparset,"estT"]*Env_suit] # parameter for scaling down probability of establishment # new
     road_netw[is.na(Pe),Pe:=0]
 
     ## ERROR check for Pe
@@ -220,8 +220,8 @@ SpreadModel <- function(parameters,init_obj,
 
     ## set data.table key for road network (much faster)
     # And subset relevant information
-    road_netw_details <- road_netw[,c("ID","LCsuit","Length","Traffic","p_natural","p_attach","p_airflow","Order")]
-    set( road_netw, j=which(colnames(road_netw) %in% c("LCsuit","Length","Traffic","p_natural","p_attach","p_airflow","Order")), value=NULL ) # new
+    road_netw_details <- road_netw[,c("ID","Env_suit","Length","Traffic","p_natural","p_attach","p_airflow","Order")]
+    set( road_netw, j=which(colnames(road_netw) %in% c("Env_suit","Length","Traffic","p_natural","p_attach","p_airflow","Order")), value=NULL ) # new
     setkey(road_netw,FromNode)
 
     ##################################################################

@@ -34,8 +34,8 @@ runTerrestrialModel<-TRUE # consider terrestrial spread?
 incl_attachment<-TRUE # if attachment to vehicles should be considered.
 incl_airflow<-TRUE # if vehicle airstream should be considered.
 incl_natural<-TRUE #if natural dispersal should be considered.
-incl_containers<-FALSE #if container flow should be considered.
-incl_pallets<-FALSE #if pallets flow should be considered.
+incl_containers<-TRUE #if container flow should be considered.
+incl_pallets<-TRUE #if pallets flow should be considered.
 
 ## simulation: set simulation setting ################################
 num_iter_T<- 10 # simulation steps. Terrestrial model only.
@@ -86,7 +86,7 @@ par_cont<-10^3 #increase for lower container probability (not fitted)
 par_pall<-10^3 #increase for lower pallet probability (not fitted)
 
 ## Treshold for container volume: all areas with number of containers arriving per year lower than Cont_treshold will not be considered
-Cont_treshold<-5
+Cont_threshold<-5
 ## Treshold for pallets volume: all links with number of pallets exchanged per year lower than Pall_threshold will not be considered
 Pall_threshold<-5
 
@@ -116,16 +116,14 @@ incl_ballast<-TRUE #if ballast water should be considered.
 
 ## simulation: set simulation setting ################################
 num_iter_W<- 10 # simulation steps. Acquatic model only.
-iter_save_W <- c(1,num_iter_W) # time steps at which results should be stored. Terrestrial model only.
+iter_save_W <- c(1,num_iter_W) # time steps at which results should be stored. Aquatic model only.
 
 traffic_type_W <- c("all") # types of traffic considered : "Motorized", "Non-motorized",   "all"
 
 ## initial conditions ################################################
-## load data set of initial distribution of sprecies
+## load data set of initial distribution of species
 init_coords_W <-data.frame(Long=c(9.9938531,13.2862487),Lat=c(53.5396466,52.5588327),Iter=c(0,20))  # Hamburg Hafen & Berlin airport. Acquatic Model
 max_dist_W<-10^3 # Maximum distance (m) from initial coordinates for a segment to be considered infected. Acquatic model only.
-
-
 
 ######################################################################
 # Aquatic Parameters: ################################################
@@ -141,12 +139,11 @@ par_nat_a<- 6.104603e+00 # scale parameter for Gammarus spp (Elliot 2003, Tab.1)
 par_nat_b<- 3.483644e+00 # shape parameter for Gammarus spp (Elliot 2003, Tab.1)
 
 
-<<<<<<< HEAD
 ## Introduction through hull-fouling: see Sylvester 2011, eq. 9
-=======
+
 #hull-fouling: see Sylvester 2011, eq. 9
 par_hull0 <- 0.000001 ## pick-up probability
->>>>>>> master
+
 par_a <-5.85 * 10^-20
 par_c1 <-20.9
 par_g <-1.03 * 10^-10
@@ -168,19 +165,21 @@ par_ball<-8.253108e+04 # shape parameter
 ## Aquatic establishment scale parameter
 par_est_W<- 7.001148e-01 #arbitrary,<=1. Pioneer species should have high values (more likely to establish if the habitat is suitable), late succession species lower values.
 
-
+# Optimal Temperature and Conductivity for establishment
+specTemp <- 13 # optimal Temperature (degrees C)
+specCond <- 100 # optimal Conductivity (mS/m)
 
 #### Initialization info #################################
 
 ## inclue readOGR in InitializeSpread for data
 
+Terrestrial_netw_data <- readOGR(dsn="C:/Users/mbagnara/Desktop/FinalDataFilesCASPIAN",layer="RailRoadNetw_Intersection_100519") # A shapefile containing a terrestrial traffic network; will be read in as a SpatialLinesDataFrame object
+Water_netw_data <- readOGR(dsn="C:/Users/mbagnara/Desktop/FinalDataFilesCASPIAN",layer="Waterways_Netw")
 
-Terrestrial_netw_data <- "RailRoadNetw_Intersection_100519.shp" # A shapefile containing a terrestrial traffic network; will be read in as a SpatialLinesDataFrame object
-Water_netw_data <- "Waterways_Netw.shp"
+env_terrestrial <- read.csv("C:/Users/mbagnara/Desktop/FinalDataFilesCASPIAN/EnvironData_Terrestrial.csv",sep=";",h=T)
+env_aquatic <- read.csv("C:/Users/mbagnara/Desktop/FinalDataFilesCASPIAN/EnvironData_Waterways.csv",sep=";",h=T)
 
-env_terrestrial <- ""
-
-Commodities_shape_data<-Cargo_shp # file has three names: Commodities_shape_data, CargoAreas and Cargo_shp
-Pallets_netw_data<-PalletsFlow
-Container_netw_data<-ContainerFlow
+Commodities_shape_data<- readOGR(dsn="C:/Users/mbagnara/Desktop/FinalDataFilesCASPIAN",layer="Cargo_shp") # file has three names: Commodities_shape_data, CargoAreas and Cargo_shp
+Pallets_netw_data<-read.csv("C:/Users/mbagnara/Desktop/FinalDataFilesCASPIAN/PalletsFlow.csv",sep=";",h=T)
+Container_netw_data<-read.csv("C:/Users/mbagnara/Desktop/FinalDataFilesCASPIAN/ContainerFlow.csv",sep=";",h=T)
 

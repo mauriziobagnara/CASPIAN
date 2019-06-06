@@ -1,6 +1,6 @@
 #INCOMPLETE
 
-InitializeWaterSpread<-function(Water_netw_data,
+InitializeWaterSpread<-function(Water_netw_data,env_aquatic,
                                 file_init="water_init_data.Rdata",save_init=TRUE, #netw_type=c("all"),
                                 dir_data=NULL, netw_data=NULL,Rdata_file=NULL,init_coords,max_dist,save_dir,
                                 species_preferences,
@@ -11,10 +11,13 @@ InitializeWaterSpread<-function(Water_netw_data,
   tmp2 <- proc.time()
 
   cat("\n Loading network \n")
-  water_shp<-readOGR(dsn=paste(getwd(),"\\data",sep=""),layer=gsub("\\.shp","",Terrestrial_netw_data))
+  water_shp<-Water_netw_data
 
-  colnames(water_shp@data) <- c("FromNode","ToNode","Motorized", "Non_motorized","Length","ID","Order","CargoToNode",   "velocity","River","Flow", "RiverSegm", "Temperature","Conductivity")
-
+  if ("Env_suit"%in%colnames(road_netw)) {
+  colnames(water_shp@data) <- c("FromNode","ToNode","Motorized", "Non_motorized","Length","ID","Order","CargoToNode",   "velocity","River","Flow", "RiverSegm", "Env_Suit")
+  } else{
+         colnames(water_shp@data) <- c("FromNode","ToNode","Motorized", "Non_motorized","Length","ID","Order","CargoToNode",   "velocity","River","Flow", "RiverSegm", "Temperature","Conductivity")
+        }
   water_netw <- as.data.table(water_shp@data)
   water_netw[,Order:=c(1:nrow(water_netw))]
 
@@ -54,18 +57,21 @@ InitializeWaterSpread<-function(Water_netw_data,
   water_netw[ToNode%in%init_nodes,stateToNode:=1]
 
   ############################################################### # new
-  cat("\n Calculating suitability of habitats \n")
+  if ("Env_suit"%in%colnames(water_netw)) {
+    cat("\n Suitability of habitats provided in network file \n")
+  } else {
+    cat("\n Calculating suitability of habitats \n")
 
-  maxTemp <- max(water_netw$Temperature,na.rm=T) # identify max values in network file
-  maxCond <- max(water_netw$Conductivity,na.rm=T) # identify max values in network file
-  water_netw$Temperature_norm <- water_netw$Temperature/maxTemp # normalise environmental variables to weight them equally
-  water_netw$Conductivity_norm <- water_netw$Conductivity/maxCond # normalise environmental variables to weight them equally
-  specTemp_norm <- species_preferences$specTemp/maxTemp # normalise species preferences
-  specCond_norm <- species_preferences$specCond/maxCond # normalise species preferences
+    maxTemp <- max(water_netw$Temperature,na.rm=T) # identify max values in network file
+    maxCond <- max(water_netw$Conductivity,na.rm=T) # identify max values in network file
+    water_netw$Temperature_norm <- water_netw$Temperature/maxTemp # normalise environmental variables to weight them equally
+    water_netw$Conductivity_norm <- water_netw$Conductivity/maxCond # normalise environmental variables to weight them equally
+    specTemp_norm <- species_preferences$specTemp/maxTemp # normalise species preferences
+    specCond_norm <- species_preferences$specCond/maxCond # normalise species preferences
 
-  ## calculate euclidean distance between species preferences and environmental variables
-  water_netw$suitability <- 1-sqrt( (specCond_norm - water_netw$Conductivity_norm)^2 + (specTemp_norm - water_netw$Temperature_norm)^2 )
-
+    ## calculate euclidean distance between species preferences and environmental variables
+    water_netw$Env_suit <- 1-sqrt( (specCond_norm - water_netw$Conductivity_norm)^2 + (specTemp_norm - water_netw$Temperature_norm)^2 )
+  }
   ###########################################################
 
   cat("\n Assembling initialization object \n")

@@ -3,7 +3,7 @@ InitializeSpread<-function(Terrestrial_netw_data,Commodities_shape_data,
                            file_init="init_data.Rdata",save_init=TRUE,netw_type=c("all"),
                            dir_data=NULL, netw_data=NULL,Rdata_file=NULL,init_coords,max_dist,save_dir,
                            species_preferences,traffic_type=c("all"),
-                           incl_containers=T,Cont_treshold=0,
+                           incl_containers=T,Cont_threshold=0,
                            incl_pallets=T,Pall_threshold=0){
 
   ### load and format shapefiles (takes a while!) ######################################################
@@ -13,10 +13,12 @@ InitializeSpread<-function(Terrestrial_netw_data,Commodities_shape_data,
   ### load road and railway network file #############################
 
   cat("\n Loading network \n")
-  roads_shp<-readOGR(dsn=paste(getwd(),"/data",sep=""),layer=gsub("\\.shp","",Terrestrial_netw_data))
-
-  colnames(roads_shp@data) <- c("FromNode","ToNode","Type","Length","cargo","passengers", "ID")
-
+  roads_shp<-Terrestrial_netw_data
+  if ("Env_suit"%in%colnames(road_netw)) {
+  colnames(roads_shp@data) <- c("FromNode","ToNode","Type","Length","cargo","passengers", "ID", "Env_suit")
+  } else {
+    colnames(roads_shp@data) <- c("FromNode","ToNode","Type","Length","cargo","passengers", "ID")
+  }
   if (all(netw_type!=c("all"))) roads_shp<-roads_shp[roads_shp@data$Type%in%netw_type,]
 
   road_netw <- as.data.table(roads_shp@data)
@@ -68,8 +70,8 @@ InitializeSpread<-function(Terrestrial_netw_data,Commodities_shape_data,
   if  (incl_containers==TRUE | incl_pallets==TRUE) {
     cat("\n Initializing trade regions \n")
     CargoAreas<-Commodities_shape_data
-    CargoAreas@data$AreaContainer <- as.character(CargoAreas@data$AreaContainer)
-    CargoAreas@data$AreaPallet <- as.character(CargoAreas@data$AreaPallet)
+    CargoAreas@data$ArCntnr <- as.character(CargoAreas@data$ArCntnr)
+    CargoAreas@data$ArePllt <- as.character(CargoAreas@data$ArePllt)
 
     NodesCoords<-getNodesCoord(roads_shp)
     coordinates(NodesCoords)<- ~ Long+Lat
@@ -90,7 +92,7 @@ InitializeSpread<-function(Terrestrial_netw_data,Commodities_shape_data,
     init_coords2<-init_coords
     coordinates(init_coords2)<- ~ Long+Lat
     proj4string(init_coords2)<-proj4string(CargoAreas)
-    init_Areas<-as.character(over(init_coords2,CargoAreas)$AreaPallet)
+    init_Areas<-as.character(over(init_coords2,CargoAreas)$ArePllt)
   }
 
   ###############################################################
@@ -103,7 +105,7 @@ InitializeSpread<-function(Terrestrial_netw_data,Commodities_shape_data,
     Pallets_netw$ToArea <- (as.character(Pallets_netw$ToArea))
     Pallets_netw$FromArea <- (as.character(Pallets_netw$FromArea))
     Pallets_netw<-Pallets_netw[FromArea!=ToArea,] #remove traffic from/to same area
-    Pallets_netw<-Pallets_netw[ToArea%in%Nodes_CargoCell$AreaPallet,] #subset, keep only areas where there are traffic nodes of the chosen netw_type
+    Pallets_netw<-Pallets_netw[ToArea%in%Nodes_CargoCell$ArePllt,] #subset, keep only areas where there are traffic nodes of the chosen netw_type
 
     # remove links with number of exchanged pallets per year < than Pall_threshold:
     if (Pall_threshold>0) { Pallets_netw<-Pallets_netw[numPallets>=Pall_threshold,]}
@@ -133,10 +135,10 @@ InitializeSpread<-function(Terrestrial_netw_data,Commodities_shape_data,
     Container_netw$ToArea <- as.character(Container_netw$ToArea)
     Container_netw$FromArea <- as.character(Container_netw$FromArea)
     Container_netw<-Container_netw[FromArea!=ToArea,] #remove traffic from/to same area
-    Container_netw<-Container_netw[ToArea%in%Nodes_CargoCell$AreaContainer,] #subset, keep only areas where there are traffic nodes of the chosen netw_type
+    Container_netw<-Container_netw[ToArea%in%Nodes_CargoCell$ArCntnr,] #subset, keep only areas where there are traffic nodes of the chosen netw_type
 
-    # remove areas with number of arriving containers per year < than Cont_treshold:
-    if (Cont_treshold>0) { Container_netw<-Container_netw[numContainers>=Cont_treshold,]}
+    # remove areas with number of arriving containers per year < than Cont_threshold:
+    if (Cont_threshold>0) { Container_netw<-Container_netw[numContainers>=Cont_threshold,]}
 
     Container_netw[,numContainers:=numContainers/12] #monthly scale
     Container_netw<-as.data.table(aggregate(numContainers ~ ToArea, Container_netw, sum))
@@ -160,36 +162,31 @@ InitializeSpread<-function(Terrestrial_netw_data,Commodities_shape_data,
 
   ###############################################################
   ## Calculate suitability of terrestrial habtitats #############
+  if ("Env_suit"%in%colnames(road_netw)) {
+    cat("\n Suitability of habitats provided in network file \n")
+  } else {
+    cat("\n Calculating suitability of habitats \n")
 
-  cat("\n Calculating suitability of habitats \n")
-  # fpath<-system.file("extdata", package="CASPIAN")
-  fpath<-paste(getwd(),"/data",sep="")
-  LCdata <- readRDS(file.path(fpath,"LandCover_RailsRoadsInters_50m.rds"))
-  categories <- read.xlsx(file.path(fpath,"clc_legend_categories.xlsx"),sheet=2) # load new categories
-  categories <- categories[,c("GRID_CODE","LC_cat_ID")]
-  categories<-as.data.table(categories)
+    LCdata<-as.data.table(env_terrestrial)
+    setkey(LCdata,LC_cat_ID)
+    setkey(species_preferences,LC_cat_ID)
+    LCdata<-LCdata[species_preferences]
 
-  setkey(categories,LC_cat_ID)
-  setkey(species_preferences,LC_cat_ID)
-  categories <- species_preferences[categories]
+    ### assign new land cover categories and species preferences
+    LCdata$LCprop <- LCdata$Proportion * LCdata$Species_preferences
 
-  ### assign new land cover categories and species preferences
-  LCdata$LCtype <- categories$LC_cat_ID[match(LCdata$LC_ID,categories$GRID_CODE)] # assign new categories
-  LCdata$SpecPref <- categories$Species_preferences[match(LCdata$LC_ID,categories$GRID_CODE)] # assign new categories
-  LCdata$LCprop <- LCdata$prop * LCdata$SpecPref
+    ## calculate suitability of habitats for each segment
+    LCdata <- as.data.table(LCdata)
+    road_segm_suit <- LCdata[,sum(LCprop),by=list(ID)]
+    road_segm_suit[V1>1,V1:=1]
 
-  ## calculate suitability of habitats for each segment
-  LCdata <- as.data.table(LCdata)
-  road_segm_suit <- LCdata[,sum(LCprop),by=list(LinkID)]
-  road_segm_suit[V1>1,V1:=1]
+    ## merge land cover suitability and road_netw
+    colnames(road_segm_suit) <- c("ID","Env_suit")
 
-  ## merge land cover suitability and road_netw
-  colnames(road_segm_suit) <- c("ID","LCsuit")
-
-  setkey(road_segm_suit,ID)
-  setkey(road_netw,ID)
-  road_netw <- road_segm_suit[road_netw]
-
+    setkey(road_segm_suit,ID)
+    setkey(road_netw,ID)
+    road_netw <- road_segm_suit[road_netw]
+  }
   ###########################################################
   ## Combine all relevant data files ########################
 

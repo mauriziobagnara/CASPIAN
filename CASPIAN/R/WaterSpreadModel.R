@@ -128,7 +128,7 @@ WaterSpreadModel <- function(parameters,init_obj,
     #get PE for segment
     cat("\n Calculating Probability of Establishment for each segment \n")
 
-    water_netw[,Pe:=parameters[nparset,"estW"]*suitability] # parameter for scaling down probability of establishment # new
+    water_netw[,Pe:=parameters[nparset,"estW"]*Env_suit] # parameter for scaling down probability of establishment # new
     water_netw[is.na(Pe),Pe:=0]
 
     ## ERROR check for Pe
@@ -140,8 +140,8 @@ WaterSpreadModel <- function(parameters,init_obj,
 
     ## set data.table key for road network (much faster)
     # And subset relevant information
-    water_netw_details <- water_netw[,c("ID","suitability","Length","Traffic","p_natural","p_hull", "Order")]
-    set( water_netw, j=which(colnames(water_netw) %in% c("suitability","Length","Traffic","p_natural","p_hull","Order")), value=NULL ) # new
+    water_netw_details <- water_netw[,c("ID","Env_suit","Length","Traffic","p_natural","p_hull", "Order")]
+    set( water_netw, j=which(colnames(water_netw) %in% c("Env_suit","Length","Traffic","p_natural","p_hull","Order")), value=NULL ) # new
     setkey(water_netw,FromNode)
 
 

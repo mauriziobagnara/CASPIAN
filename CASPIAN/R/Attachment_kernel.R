@@ -9,7 +9,7 @@
 #'
 #' @keywords CASPIAN
 #' @author Maurizio Bagnara, Hanno Seebens
-#' @examples {
+#' @examples
 #' #generating vector of distances, in Km:
 #' dist<-seq(from=0.1,to=10,length.out=100)
 #'
@@ -23,10 +23,10 @@
 #' AttachmentDisp<-f_airflow(D = dist, a = par_a, b = par_b,g = par_g)
 #' plot(AttachmentDisp~D,xlab="Distance (Km)", ylab="Probability", pch=16)
 #'
-#'  }
-#'  @references {
-#'  Taylor, K., Brummer, T., Taper, M. L., Wing, A., & Rew, L. J. (2012). Human‐mediated long‐distance dispersal: an empirical evaluation of seed dispersal by vehicles. Diversity and Distributions, 18(9), 942-951.
-#'  }
+#'
+#' @references
+#' Taylor, K., Brummer, T., Taper, M. L., Wing, A., & Rew, L. J. (2012). Human‐mediated long‐distance dispersal: an empirical evaluation of seed dispersal by vehicles. Diversity and Distributions, 18(9), 942-951.
+#'
 #'
 
 ## attachment kernel. Models dispersal due to distance between nodes

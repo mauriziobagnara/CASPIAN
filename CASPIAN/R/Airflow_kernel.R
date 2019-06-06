@@ -8,7 +8,7 @@
 #'
 #' @keywords CASPIAN
 #' @author Maurizio Bagnara, Hanno Seebens
-#' @examples {
+#' @examples
 #' #generating vector of distances, in Km:
 #' dist<-seq(from=0.1,to=10,length.out=100)
 #'
@@ -20,10 +20,9 @@
 #' AirstreamDisp<-f_airflow(D = dist, b = par_b, a = par_a)
 #' plot(AirstreamDisp~D,xlab="Distance (Km)", ylab="Probability", pch=16)
 #'
-#'  }
-#'  @references {
-#'  von der Lippe, M., Bullock, J. M., Kowarik, I., Knopp, T., & Wichmann, M. (2013). Human-mediated dispersal of seeds by the airflow of vehicles. PloS one, 8(1), e52733.
-#'  }
+#' @references
+#' von der Lippe, M., Bullock, J. M., Kowarik, I., Knopp, T., & Wichmann, M. (2013). Human-mediated dispersal of seeds by the airflow of vehicles. PloS one, 8(1), e52733.
+#'
 #'
 
 ## airflow kernel. Models dispersal due to vehicle airflow between nodes.

@@ -1,7 +1,7 @@
 #configFile: full path of the configuration file
 
 runCASPIAN<-function(configFile){
-
+  cat("\n Loading CASPIAN configuration file \n")
   source(configFile,local=TRUE)
 
    # build parameter matrix
@@ -39,7 +39,7 @@ if(runTerrestrialModel==TRUE){
                                 netw_type=netw_type,save_init=save_init, save_dir=dir.name_T,file_init=file_init,
                                 species_preferences=species_preferences,traffic_type=traffic_type_T,
                                 incl_containers=incl_containers,incl_pallets=incl_pallets,
-                                Cont_treshold=Cont_treshold,Pall_threshold=Pall_treshold)
+                                Cont_threshold=Cont_threshold,Pall_threshold=Pall_threshold)
 
   } else if (restart==FALSE & initialize==FALSE) {cat("\n Loading initialization data \n")
     load(file_init)
@@ -56,7 +56,7 @@ if(runTerrestrialModel==TRUE){
                             init_coords=init_coords_T, num_iter=num_iter_T,max_dist = max_dist_T,
                             incl_attachment=incl_attachment,incl_airflow=incl_airflow, incl_natural=incl_natural,
                             incl_containers=incl_containers,incl_pallets=incl_pallets,
-                            Cont_treshold=Cont_treshold,Pall_threshold=Pall_treshold,
+                            Cont_threshold=Cont_threshold,Pall_threshold=Pall_threshold,
                             #species_preferences=species_preferences,
                             iter_save = iter_save_T,plot_funct_rel=plot_funct_rel
                           )
@@ -105,7 +105,7 @@ if (runAquaticModel==TRUE){
     load(file_restart)
     init_water_data<-water_restart_data
   } else if (restart==FALSE & initialize==TRUE) {
-    init_water_data<-InitializeWaterSpread(Water_netw_data=Water_netw_data,
+    init_water_data<-InitializeWaterSpread(Water_netw_data=Water_netw_data,env_aquatic=env_aquatic,
                                            init_coords=init_coords_W,max_dist=max_dist_W,
                                            #netw_type=netw_type,
                                            save_init=save_init, save_dir=dir.name_W,file_init=file_init,
