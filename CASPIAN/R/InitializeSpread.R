@@ -14,7 +14,7 @@ InitializeSpread<-function(Terrestrial_netw_data,Commodities_shape_data,
 
   cat("\n Loading network \n")
   roads_shp<-Terrestrial_netw_data
-  if ("Env_suit"%in%colnames(road_netw)) {
+  if ("Env_suit"%in%colnames(roads_shp@data)) {
   colnames(roads_shp@data) <- c("FromNode","ToNode","Type","Length","cargo","passengers", "ID", "Env_suit")
   } else {
     colnames(roads_shp@data) <- c("FromNode","ToNode","Type","Length","cargo","passengers", "ID")

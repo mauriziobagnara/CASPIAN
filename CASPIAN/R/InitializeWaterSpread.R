@@ -13,7 +13,7 @@ InitializeWaterSpread<-function(Water_netw_data,env_aquatic,
   cat("\n Loading network \n")
   water_shp<-Water_netw_data
 
-  if ("Env_suit"%in%colnames(road_netw)) {
+  if ("Env_suit"%in%colnames(water_shp@data)) {
   colnames(water_shp@data) <- c("FromNode","ToNode","Motorized", "Non_motorized","Length","ID","Order","CargoToNode",   "velocity","River","Flow", "RiverSegm", "Env_Suit")
   } else{
          colnames(water_shp@data) <- c("FromNode","ToNode","Motorized", "Non_motorized","Length","ID","Order","CargoToNode",   "velocity","River","Flow", "RiverSegm", "Temperature","Conductivity")
