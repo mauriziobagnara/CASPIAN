@@ -19,9 +19,9 @@ plotResults<-function(list_results,shapeObj,variable,save_plot,save_dir){
     # Combine probabilities of invasion in both directions
     CombList<-list()
     already<-c()
-    for (al in shapeObj$ID){
-      if (al%in%already==FALSE) {
-        x<-shapeObj[shapeObj$ID==al,]
+    for (i in shapeObj$ID){
+      if (i%in%already==FALSE) {
+        x<-shapeObj[shapeObj$ID==i,]
         y<-shapeObj[shapeObj$FromNode==x$ToNode & shapeObj$ToNode==x$FromNode,]
         z<-rbind(x,y)
         z@data[,colNum]<-pUnion(z@data[,colNum])
@@ -29,7 +29,7 @@ plotResults<-function(list_results,shapeObj,variable,save_plot,save_dir){
         CombList<-append(CombList,z)
       }
     }
-    shapeObj<-do.call(rbind,CombList)
+    shapeObj<-do.call(rbind(CombList))
 
 
     # get color palette here
@@ -39,9 +39,6 @@ plotResults<-function(list_results,shapeObj,variable,save_plot,save_dir){
 
     #isolating segments where species has been introduced, not introduced, or has invaded
     shapeObj@data$norm<-as.numeric(shapeObj@data$norm)
-    shapeObj@data<-as.data.table(shapeObj@data)
-    setkey(shapeObj@data,Order)
-
     Inv<-shapeObj[shapeObj@data$norm>0,]
     Not_inv<-shapeObj[shapeObj@data$norm==0,]
 
@@ -94,12 +91,9 @@ plotResults<-function(list_results,shapeObj,variable,save_plot,save_dir){
 
     #actual map plotting
     op <- par(mar=c(0.1,0.2,0.1,0.2))
-    border_dataset2<-readOGR(dsn="C:/Users/mbagnara/Dropbox/AlienSpeciesSpread/Data/TestDataRoad/20180314_Verkehrsbelastungen2015_DTV/gadm36_DEU_shp",layer="gadm36_DEU_0")
-    plot(border_dataset2)
     plot(Not_inv,xlim=c(xmin(shapeObj),xmax(shapeObj)),ylim=c(ymin(shapeObj),ymax(shapeObj)),
          axes=F,col="darkgray",
-         panel.first=rect(par("usr")[1],par("usr")[3],par("usr")[2],par("usr")[4]),
-         add=T)
+         panel.first=rect(par("usr")[1],par("usr")[3],par("usr")[2],par("usr")[4]))
   #  plot(Not_inv,add=T,col="darkgray")
     plot(Inv,add=T,col=Inv@data$color)
     # for (j in init_nodes) points(subset(node_shp_sub,Knoten_Num%in%j),pch=1,cex=1,col="darkgrey",lwd=2)

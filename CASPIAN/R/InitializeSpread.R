@@ -161,7 +161,7 @@ InitializeSpread<-function(Terrestrial_netw_data,Commodities_shape_data,
 
 
   ###############################################################
-  ## Calculate suitability of terrestrial habitats #############
+  ## Calculate suitability of terrestrial habtitats #############
   if ("Env_suit"%in%colnames(road_netw)) {
     cat("\n Suitability of habitats provided in network file \n")
   } else {
