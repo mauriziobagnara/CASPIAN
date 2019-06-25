@@ -100,7 +100,7 @@ WaterSpreadModel <- function(parameters,init_obj,
                                              g = parameters[nparset,"gamma"],c2 = parameters[nparset,"c2"],
                                              b = parameters[nparset,"beta"],c3 = parameters[nparset,"c3"],
                                              Dp = Port_time,Qp = Paint_time,VTp = Length)]
-      water_netw[,p_hull:= 1-(1-p_hull)^(Traffic*parameters[nparset,"hull0"])]
+     # water_netw[,p_hull:= 1-(1-p_hull)^(Traffic*parameters[nparset,"hull0"])]
     } else{water_netw[,p_hull:=0]}
 
     water_netw[is.na(p_hull),p_hull:=0]
