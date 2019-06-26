@@ -16,29 +16,26 @@ plotResults<-function(list_results,shapeObj,variable,save_plot,save_dir){
 
     shapeObj@data <- copy(list_results[[i]])
     colNum<-which(colnames(shapeObj@data)==variable)
-    # Combine probabilities of invasion in both directions
-    CombList<-list()
+
+    cat("\n Combining probabilities of invasion in both directions \n")
+    assign(x="already",value=c(),envir=.GlobalEnv)
     already<-c()
-    for (i in shapeObj$ID){
-      if (i%in%already==FALSE) {
-        x<-shapeObj[shapeObj$ID==i,]
-        y<-shapeObj[shapeObj$FromNode==x$ToNode & shapeObj$ToNode==x$FromNode,]
-        z<-rbind(x,y)
-        z@data[,colNum]<-pUnion(z@data[,colNum])
-        already<-c(already,z@data$ID)
-        CombList<-append(CombList,z)
-      }
-    }
-    shapeObj<-do.call(rbind(CombList))
+    invisible(
+      mapply(combID,shapeObj@data$ID,MoreArgs = list(shp=shapeObj@data,alr=already,var=variable))
+    )
+    setkey(shapeObj@data,Order)
 
-
+    rm("already",envir = .GlobalEnv)
     # get color palette here
-    shapeObj@data$norm <- as.character(round(shapeObj@data[,colNum],num_col))
+    shapeObj@data$norm <- as.character(round(shapeObj@data[,get(variable)],num_col))
 
     shapeObj@data<-merge(shapeObj@data,pal,by="norm",all.x=TRUE,sort=FALSE)
 
     #isolating segments where species has been introduced, not introduced, or has invaded
     shapeObj@data$norm<-as.numeric(shapeObj@data$norm)
+    shapeObj@data<-as.data.table(shapeObj@data)
+    setkey(shapeObj@data,Order)
+
     Inv<-shapeObj[shapeObj@data$norm>0,]
     Not_inv<-shapeObj[shapeObj@data$norm==0,]
 
@@ -91,9 +88,12 @@ plotResults<-function(list_results,shapeObj,variable,save_plot,save_dir){
 
     #actual map plotting
     op <- par(mar=c(0.1,0.2,0.1,0.2))
+
     plot(Not_inv,xlim=c(xmin(shapeObj),xmax(shapeObj)),ylim=c(ymin(shapeObj),ymax(shapeObj)),
          axes=F,col="darkgray",
-         panel.first=rect(par("usr")[1],par("usr")[3],par("usr")[2],par("usr")[4]))
+         panel.first=rect(par("usr")[1],par("usr")[3],par("usr")[2],par("usr")[4])
+#         ,add=T
+         )
   #  plot(Not_inv,add=T,col="darkgray")
     plot(Inv,add=T,col=Inv@data$color)
     # for (j in init_nodes) points(subset(node_shp_sub,Knoten_Num%in%j),pch=1,cex=1,col="darkgrey",lwd=2)
