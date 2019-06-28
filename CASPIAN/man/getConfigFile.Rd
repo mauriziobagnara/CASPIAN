@@ -4,7 +4,7 @@
 \alias{getConfigFile}
 \title{Function to obtain the Configuration File for CASPIAN.}
 \usage{
-getConfigFile(outputDir)
+getConfigFile(outputDir, overwrite = FALSE)
 }
 \arguments{
 \item{outputDir}{character, the path where the Configuration File will be saved}
@@ -17,8 +17,8 @@ It is STRONGLY RECOMMENDED to change only the values of parameters and variables
 #saving the configuration file in "C:"
 getConfigFile("C:/")
 
-#saving the configuration file in the current working directory:
-getConfigFile(getwd())
+#saving the configuration file in the current working directory, overwriting existing file:
+getConfigFile(getwd(),overwrite=TRUE)
 
 }
 \author{

@@ -29,26 +29,20 @@
 #   If FALSE, an x11() device is opened. Only considered if makeplot=TRUE. if
 # iter_save: which model iterations should be saved? By default=num_iter. If makeplot=TRUE, several maps
 #   will be created, one for each saved iteration.
-# save.restart: should results be saved in order to resume the simulation at a later stage? Default FALSE
-# restart: Should the simulation be resumed from previously saved results? Default FALSE. Results are saved automatically in restart.rData
-#   file_restart: if restart=TRUE, the FULL path of the file to be read in (previously created by ModelSpread() ).MUST BE an .Rdata file
 # export_results: Should results of the last iteration be exported in the newly created folder as a csv file?
 #   Default FALSE.
 # netw_type: the types of roads to be considered in the simulation. Default c("all").
 
 
-
-SpreadModel <- function(parameters,init_obj,
+CASPIANSpreadTerrestrial <- function(parameters,init_obj,
                         Terrestrial_netw_data,Commodities_shape_data,
                         Pallets_netw_data,Container_netw_data,
-                        dir_data=NULL, netw_data=NULL,Rdata_file=NULL,init_coords, num_iter,
+                        init_coords, num_iter,
                         incl_attachment=T,incl_airflow=T,incl_natural=T,
                         incl_containers=T,Cont_threshold=0,
                         incl_pallets=T,Pall_threshold=0,
-                        #species_preferences,
                         max_dist,
                         iter_save=num_iter,plot_funct_rel=FALSE,
-                        save.restart=FALSE,restart=FALSE,file_restart=NULL,
                         export_results=F,netw_type=c("all"),traffic_type=c("all")){
 
 
@@ -434,23 +428,6 @@ SpreadModel <- function(parameters,init_obj,
 
   roads_shp@data<-road_netw_out
 
-  if (save.restart){
-    cat("\n Assembling and saving restart object \n")
-    if (incl_pallets==FALSE & incl_containers==FALSE){
-      restart_data<-list(roads_shp,init_segm)
-      names(restart_data)<-c("roads_shp","init_segm")
-    } else if (incl_pallets==FALSE & incl_containers==TRUE){
-      restart_data<-list(roads_shp,init_segm,Nodes_CargoCell,Container_netw)
-      names(restart_data)<-c("roads_shp","init_segm","Nodes_CargoCell","Container_netw")
-    } else if (incl_pallets==TRUE & incl_containers==FALSE){
-      restart_data<-list(roads_shp,init_segm,Nodes_CargoCell,Pallets_netw,init_Areas)
-      names(restart_data)<-c("roads_shp","init_segm","Nodes_CargoCell","Pallets_netw","init_Areas")
-    } else if (incl_pallets==TRUE & incl_containers==TRUE){
-      restart_data<-list(roads_shp,init_segm,Nodes_CargoCell,Container_netw,Pallets_netw,init_Areas)
-      names(restart_data)<-c("roads_shp","init_segm","Nodes_CargoCell","Container_netw","Pallets_netw","init_Areas")
-    }
-    save(restart_data, file = file.path(dir.name,"restart.Rdata"))
-  }
   return(modelList)
 }
 

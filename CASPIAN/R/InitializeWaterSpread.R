@@ -1,8 +1,8 @@
 #INCOMPLETE
 
-InitializeWaterSpread<-function(Water_netw_data,env_aquatic,
-                                file_init="water_init_data.Rdata",save_init=TRUE, #netw_type=c("all"),
-                                dir_data=NULL, netw_data=NULL,Rdata_file=NULL,init_coords,max_dist,save_dir,
+InitSpreadAquatic<-function(Water_netw_data,env_aquatic,
+                                file_init="water_init_data.Rdata",save_init=TRUE,
+                                init_coords,max_dist,save_dir,
                                 species_preferences,
                                 traffic_type=c("all")
                                 ){
@@ -17,7 +17,11 @@ InitializeWaterSpread<-function(Water_netw_data,env_aquatic,
   colnames(water_shp@data) <- c("FromNode","ToNode","Motorized", "Non_motorized","Length","ID","Order","CargoToNode",   "velocity","River","Flow", "RiverSegm", "Env_Suit")
   } else{
          colnames(water_shp@data) <- c("FromNode","ToNode","Motorized", "Non_motorized","Length","ID","Order","CargoToNode",   "velocity","River","Flow", "RiverSegm", "Temperature","Conductivity")
-        }
+  }
+  water_shp@data$FromNode<-as.character(water_shp@data$FromNode)
+  water_shp@data$ToNode<-as.character(water_shp@data$ToNode)
+  water_shp@data$ID<-as.character(water_shp@data$ID)
+
   water_netw <- as.data.table(water_shp@data)
   water_netw[,Order:=c(1:nrow(water_netw))]
 

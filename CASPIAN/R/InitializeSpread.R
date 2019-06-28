@@ -1,7 +1,7 @@
-InitializeSpread<-function(Terrestrial_netw_data,Commodities_shape_data,
+InitSpreadTerrestrial<-function(Terrestrial_netw_data,Commodities_shape_data,
                            Pallets_netw_data,Container_netw_data,env_terrestrial,
                            file_init="init_data.Rdata",save_init=TRUE,netw_type=c("all"),
-                           dir_data=NULL, netw_data=NULL,Rdata_file=NULL,init_coords,max_dist,save_dir,
+                           init_coords,max_dist,save_dir,
                            species_preferences,traffic_type=c("all"),
                            incl_containers=T,Cont_threshold=0,
                            incl_pallets=T,Pall_threshold=0){
@@ -19,6 +19,11 @@ InitializeSpread<-function(Terrestrial_netw_data,Commodities_shape_data,
   } else {
     colnames(roads_shp@data) <- c("FromNode","ToNode","Type","Length","cargo","passengers", "ID")
   }
+  roads_shp@data$FromNode<-as.character(roads_shp@data$FromNode)
+  roads_shp@data$ToNode<-as.character(roads_shp@data$ToNode)
+  roads_shp@data$Type<-as.character(roads_shp@data$Type)
+  roads_shp@data$ID<-as.character(roads_shp@data$ID)
+
   if (all(netw_type!=c("all"))) roads_shp<-roads_shp[roads_shp@data$Type%in%netw_type,]
 
   road_netw <- as.data.table(roads_shp@data)

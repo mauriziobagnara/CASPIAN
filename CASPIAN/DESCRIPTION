@@ -4,10 +4,11 @@ Title: Calculation of Alien Species Probability of Invasion Along Networks
 Version: 1.0
 Author: Maurizio Bagnara, Hanno Seebens
 Maintainer: Hanno Seebens <hanno.seebens@senckenberg.de>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: CASPIAN is a computer model that simulates the spread of alien species along (and across) transportation networks.  It calculates the probability of spread and establishments of individual species via various combinations of modes of transport, accounting for traffic intensity. 
+    The model is based on the transportation networks for roads, rails and inland waterways. Relevant spread pathways included in CASPIAN are: natural dispersal, attachment to vehicles, dispersal by vehicle airstream, dispersal in containers and cargo pallets, ship hull-fowling and dispersal in ballast water. 
+    CASPIAN has a modular structure so that individual components can be switched on or off.  The aquatic component is separate from the terrestrial component, as it is unlikely that aquatic organisms would be transported by road and rail, or that terrestrial species would be transported in the aquatic environment. In the terrestrial part, the corresponding transport networks are blended together to simulate the spread of intermodal modes (rail and road).
 Depends: data.table, rgdal, SearchTrees, geosphere, sp, openxlsx, raster
-License: What license is it under?
+License: GNU General Public License v3.0
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1

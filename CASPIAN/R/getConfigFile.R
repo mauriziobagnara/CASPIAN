@@ -9,12 +9,25 @@
 #' #saving the configuration file in "C:"
 #' getConfigFile("C:/")
 #'
-#' #saving the configuration file in the current working directory:
-#' getConfigFile(getwd())
+#' #saving the configuration file in the current working directory, overwriting existing file:
+#' getConfigFile(getwd(),overwrite=TRUE)
 #'
 
-getConfigFile <- function(outputDir){
-  if (file.exists(file.path(outputDir,"ConfigFile.R"))) warning("Existing configuration file has been overwritten")
-  file.copy(from=file.path(system.file("extdata", package="CASPIAN"),"ConfigFile.R"),to=file.path(outputDir,"ConfigFile.R"),overwrite=T)
-  cat("\n Configuration file saved in ",outputDir, " \n")
+getConfigFile <- function(outputDir,overwrite=FALSE){
+  if (file.exists(file.path(outputDir,"ConfigFile.R"))) {
+    if (overwrite==TRUE) {
+      file.copy(from=file.path(system.file("extdata", package="CASPIAN"),"ConfigFile.R"),
+                                     to=file.path(outputDir,"ConfigFile.R"),overwrite=overwrite)
+      warning("Existing configuration file has been overwritten")
+      cat("\n Configuration file saved in ",outputDir, " \n")
+      } else if (overwrite==FALSE) {
+        stop("Configuration file already exists. To overwrite, set overwrite=TRUE")
+      }
+  } else {
+    file.copy(from=file.path(system.file("extdata", package="CASPIAN"),"ConfigFile.R"),
+                     to=file.path(outputDir,"ConfigFile.R"),overwrite=F)
+    cat("\n Configuration file saved in ",outputDir, " \n")
   }
+}
+
+

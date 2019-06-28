@@ -1,4 +1,4 @@
-plotResults<-function(list_results,shapeObj,variable,save_plot,save_dir){
+plotCASPIAN<-function(list_results,shapeObj,variable,save_plot,save_dir,lwd=1){
   #  border_shp <- readOGR(dsn=file.path(dir_data,"gadm36_DEU_shp"),layer="gadm36_DEU_1",stringsAsFactors = F)
   num_col<-5
   #create palette
@@ -39,20 +39,6 @@ plotResults<-function(list_results,shapeObj,variable,save_plot,save_dir){
     Inv<-shapeObj[shapeObj@data$norm>0,]
     Not_inv<-shapeObj[shapeObj@data$norm==0,]
 
-    #roads_shp_sub <- subset(roads_shp,ID%in%road_netw[Pinv>0,ID]) ## create the shapefile subset
-
-    # node_shp_sub <- subset(nodes_shp,Knoten_Num%in%node_state[state==0,FromNode])
-    #
-    # dat_nodes <- nodes_shp_sub@data
-    # dat_nodes <- cbind(dat_nodes,1:dim(dat_nodes)[1])
-    # colnames(dat_nodes)[2] <- "order"
-    # dat_nodes$Knoten_Num <- as.numeric(dat_nodes$Knoten_Num)
-    # nodes_col <- merge(node_state,dat_nodes,by.x="FromNode",by.y="Knoten_Num",all.y=T)
-
-    # nodes_col <- nodes_col[order(nodes_col$order)]
-
-    #   assign(x = "node_shp_sub",value = node_shp_sub, envir = .GlobalEnv)
-
     if (save_plot==T) {png(filename = file.path(save_dir,(paste0("SpreadModel_map",sprintf("%04d", as.numeric(names(list_results)[i])),".png"))),width=10,height = 8,units = "in",res=c(3*72))
     } else {
       x11(width=10,height = 10)
@@ -80,28 +66,16 @@ plotResults<-function(list_results,shapeObj,variable,save_plot,save_dir){
    )
    text(x=c(xl-0.1), y = seq(yt,yb,length.out = c(num_legend+1))[c(1,seq(2,c(num_legend+1),length.out = 11))],adj = 1,
         labels = c("Prob = 0",paste(variable, "=",seq(0,1,by=0.1),sep=" ")),cex=.9)
-   # mtext(
-   #   paste("Pinv =",seq(1,0,by=-0.1),sep=" "),
-   #   side=2,at= c(seq(yb,yt,(yt-yb)/(num_legend+1))[seq(1,(num_legend+1),by=c(num_legend/10))]),
-   #   las=2,cex=0.7)
-   # frame()
 
     #actual map plotting
     op <- par(mar=c(0.1,0.2,0.1,0.2))
 
     plot(Not_inv,xlim=c(xmin(shapeObj),xmax(shapeObj)),ylim=c(ymin(shapeObj),ymax(shapeObj)),
          axes=F,col="darkgray",
-         panel.first=rect(par("usr")[1],par("usr")[3],par("usr")[2],par("usr")[4])
-#         ,add=T
+         panel.first=rect(par("usr")[1],par("usr")[3],par("usr")[2],par("usr")[4],lwd=lwd)
          )
-  #  plot(Not_inv,add=T,col="darkgray")
-    plot(Inv,add=T,col=Inv@data$color)
-    # for (j in init_nodes) points(subset(node_shp_sub,Knoten_Num%in%j),pch=1,cex=1,col="darkgrey",lwd=2)
-    # mtext(t,side=3,line=-2)
+    plot(Inv,add=T,col=Inv@data$color,lwd=lwd)
     legend("topleft",c(paste0("Iter. #",names(list_results)[i])),box.col = "white",bg = "white")
-#    plot(border_dataset,axes=F,add=T, border="black")
-
-
 
     if (save_plot==T) dev.off()
     cat("\n Map",i,"completed \n")
@@ -109,5 +83,4 @@ plotResults<-function(list_results,shapeObj,variable,save_plot,save_dir){
   }
 }
 
-
-#plotResults(list_results = results[3],shapeObj = Road_Railway_Network[Road_Railway_Network@data$Typ%in%netw_type,],variable="Pinv",save_plot = FALSE)
+#plotCASPIAN(list_results = results[3],shapeObj = Road_Railway_Network[Road_Railway_Network@data$Typ%in%netw_type,],variable="Pinv",save_plot = FALSE)

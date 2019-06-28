@@ -26,11 +26,8 @@ if(runTerrestrialModel==TRUE){
   dir.create(dir.name_T)
 
   #Model initialization
-  if (restart==TRUE){ cat("\n Loading previous results \n")
-    load(file_restart)
-    init_obj<-restart_data
-  } else if (restart==FALSE & initialize==TRUE) {
-    init_obj<-InitializeSpread(Terrestrial_netw_data=Terrestrial_netw_data,
+  if (initialize==TRUE) {
+    init_obj<-InitSpreadTerrestrial(Terrestrial_netw_data=Terrestrial_netw_data,
                                 Commodities_shape_data=Commodities_shape_data,
                                 Pallets_netw_data=Pallets_netw_data,
                                 Container_netw_data=Container_netw_data,
@@ -41,13 +38,13 @@ if(runTerrestrialModel==TRUE){
                                 incl_containers=incl_containers,incl_pallets=incl_pallets,
                                 Cont_threshold=Cont_threshold,Pall_threshold=Pall_threshold)
 
-  } else if (restart==FALSE & initialize==FALSE) {cat("\n Loading initialization data \n")
+  } else if (initialize==FALSE) {cat("\n Loading initialization data \n")
     load(file_init)
   }
 
 
   # Spread Calculations
-  TerrestrialModelResults<-SpreadModel(parameters=parameters,init_obj=init_obj,
+  TerrestrialModelResults<-CASPIANSpreadTerrestrial(parameters=parameters,init_obj=init_obj,
                             Terrestrial_netw_data=Terrestrial_netw_data,
                             Commodities_shape_data=Commodities_shape_data,
                             Pallets_netw_data=Pallets_netw_data,
@@ -57,7 +54,6 @@ if(runTerrestrialModel==TRUE){
                             incl_attachment=incl_attachment,incl_airflow=incl_airflow, incl_natural=incl_natural,
                             incl_containers=incl_containers,incl_pallets=incl_pallets,
                             Cont_threshold=Cont_threshold,Pall_threshold=Pall_threshold,
-                            #species_preferences=species_preferences,
                             iter_save = iter_save_T,plot_funct_rel=plot_funct_rel
                           )
 
@@ -101,24 +97,20 @@ if (runAquaticModel==TRUE){
   dir.create(dir.name_W)
 
   #Model initialization
-  if (restart==TRUE){ cat("\n Loading previous results \n")
-    load(file_restart)
-    init_water_data<-water_restart_data
-  } else if (restart==FALSE & initialize==TRUE) {
-    init_water_data<-InitializeWaterSpread(Water_netw_data=Water_netw_data,env_aquatic=env_aquatic,
+  if (initialize==TRUE) {
+    init_water_data<-InitSpreadAquatic(Water_netw_data=Water_netw_data,env_aquatic=env_aquatic,
                                            init_coords=init_coords_W,max_dist=max_dist_W,
-                                           #netw_type=netw_type,
                                            save_init=save_init, save_dir=dir.name_W,file_init=file_init,
                                            species_preferences=species_preferences,
                                            traffic_type=traffic_type_W
     )
 
-  } else if (restart==FALSE & initialize==FALSE) {cat("\n Loading initialization data \n")
+  } else if (initialize==FALSE) {cat("\n Loading initialization data \n")
     load(file_init)
   }
 
   #Spread calculations
-  AquaticModelResults<-WaterSpreadModel(parameters=parameters,init_obj=init_water_data,
+  AquaticModelResults<-CASPIANSpreadAquatic(parameters=parameters,init_obj=init_water_data,
                                            Water_netw_data=Water_netw_data,
                                          traffic_type=traffic_type_W,
                                          init_coords=init_coords_W, num_iter=num_iter_W,max_dist = max_dist_W,
@@ -156,11 +148,11 @@ if (runAquaticModel==TRUE){
 if (makeplot) {
   if (runTerrestrialModel==TRUE){
     cat("\n Creating Terrestrial maps \n")
-  plotResults(list_results=TerrestrialModelResults,shapeObj=init_obj$roads_shp,variable="Pinv", save_plot=save_plot,save_dir=dir.name_T)
+    plotCASPIAN(list_results=TerrestrialModelResults,shapeObj=init_obj$roads_shp,variable="Pinv", save_plot=save_plot,save_dir=dir.name_T)
     }
   if (runAquaticModel==TRUE){
     cat("\n Creating Aquatic maps \n")
-  plotResults(list_results=AquaticModelResults,shapeObj=init_water_data$water_shp,variable="Pinv",save_plot=save_plot,save_dir=dir.name_W)
+    plotCASPIAN(list_results=AquaticModelResults,shapeObj=init_water_data$water_shp,variable="Pinv",save_plot=save_plot,save_dir=dir.name_W)
   }
 }
 

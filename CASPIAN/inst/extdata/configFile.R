@@ -1,6 +1,19 @@
 ####################################################################
-#### Model settings and parameters #################################
+#### CASPIAN Model settings and parameters #########################
 ####################################################################
+
+######################################################################
+# Input Files: ################################################
+
+Terrestrial_netw_data <- readOGR(dsn="FinalDataFilesCASPIAN",layer="RoadRail_Netw") # A shapefile containing a terrestrial traffic network; will be read in as a SpatialLinesDataFrame object
+Water_netw_data <- readOGR(dsn="FinalDataFilesCASPIAN",layer="Waterways_Netw") # A shapefile containing a aquatic traffic network; will be read in as a SpatialLinesDataFrame object
+
+env_terrestrial <- read.csv("FinalDataFilesCASPIAN/EnvironData_Terrestrial.csv",sep=";",h=T) # file with environmental information for terrestrial network
+env_aquatic <- read.csv("FinalDataFilesCASPIAN/EnvironData_Waterways.csv",sep=";",h=T) # file with environmental information for aquatic network
+
+Commodities_shape_data<- readOGR(dsn="FinalDataFilesCASPIAN",layer="Cargo_shp") # A shapefile containing the cargo areas IDs and locations
+Pallets_netw_data<-read.csv("FinalDataFilesCASPIAN/PalletsFlow.csv",sep=";",h=T) # file containing iformation about cargo pallets flow
+Container_netw_data<-read.csv("FinalDataFilesCASPIAN/ContainerFlow.csv",sep=";",h=T) # file containing iformation about container flow
 
 ####################################################################
 ## General model settings ##########################################
@@ -8,9 +21,6 @@
 makeplot<-TRUE # should model results be plotted as maps at steps of iter_save_?
 save_plot<-TRUE # If TRUE, plots are created in the newly created folder as .png files. If FALSE, an x11() device is opened. Only considered if makeplot=TRUE.
 
-save.restart=FALSE #should results be saved in order to resume the simulation at a later stage?
-restart=FALSE #Should the simulation be resumed from previously saved results? Results are saved automatically in restart.rData
-file_restart=NULL #if restart=TRUE, the FULL path of the file to be read in (previously created by ModelSpread() or runCASPIAN() ).MUST BE an .Rdata file
 export_results=c("txt","csv","shp")  #Should results be exported in the newly created folder? Supported values are "csv","txt",and "shp for ESRI Shapefiles.
 #This will create one file per each iteration saved.
 #For "csv" and "txt", the spatial information (e.g. links coordinates) will NOT be retained.
@@ -66,19 +76,19 @@ par_att0_Roads <- 8.371457e-07 ## pick-up probability on roads
 par_att0_Railways<- 9.398072e-06 ## pick-up probability on railways
 
 par_att1 <- 6.627903e-01  # parameter c in Taylor et al. 2012, Model 2
-par_att2 <-  -3.681763e-02   # parameter b in Taylor et al. 2012, Model 2. Calculated as average of b, table 2, on paved roads
+par_att2 <-  -3.681763e-02   # parameter b in Taylor et al. 2012, Model 2.
 par_att3 <- 3.569937e-01  # parameter g in Taylor et al. 2012, Model 2
 
 ## airflow kernel parameters
 par_air0_Roads<-0.001 ## pick-up probability on Roads
 par_air0_Railways<-0.005 ## pick-up probability on Railways
 
-par_air1<-2.307 # parameter b in Von Der Lippe et al. 2013, Lognormal. Values for A. altissima
-par_air2<-0.724 # parameter a in Von Der Lippe et al. 2013, Lognormal. Values for A. altissima
+par_air1<-2.307 # parameter b in Von Der Lippe et al. 2013, Lognormal.
+par_air2<-0.724 # parameter a in Von Der Lippe et al. 2013, Lognormal.
 
 ## natural dispersal kernel parameter
-par_nat1<- 1.06 # González-Martínez et al. 2006, P. pinaster. Always >0
-par_nat2<- 4.813674e-01 # González-Martínez et al . 2006, P. pinaster.   >1: thin-tailed ; <1: fat-tailed. Values for b generally found from 0.3 to 0.6 (Nathan et al. 2012)
+par_nat1<- 1.06 # González-Martínez et al. 2006. Always >0
+par_nat2<- 4.813674e-01 # González-Martínez et al . 2006.   >1: thin-tailed ; <1: fat-tailed. Values for b generally found from 0.3 to 0.6 (Nathan et al. 2012)
 
 ## parameter for introduction by container
 par_cont<-10^3 #increase for lower container probability (not fitted)
@@ -135,21 +145,20 @@ max_dist_W<-10^3 # Maximum distance (m) from initial coordinates for a segment t
 
 ## Dispersal parameters ####################################
 ## Natural dispersal: see Elliot 2003, eq. 2a
-par_nat_a<- 6.104603e+00 # scale parameter for Gammarus spp (Elliot 2003, Tab.1)
-par_nat_b<- 3.483644e+00 # shape parameter for Gammarus spp (Elliot 2003, Tab.1)
+par_nat_a<- 6.830226e+00 # scale parameter for Gammarus spp
+par_nat_b<- 3.499327e+00 # shape parameter for Gammarus spp
 
 
 ## Introduction through hull-fouling: see Sylvester 2011, eq. 9
 
-#hull-fouling: see Sylvester 2011, eq. 9
-par_hull0 <- 0.000001 ## pick-up probability
+par_hull0 <- 1e-06 ## pick-up probability
 
-par_a <-5.85 * 10^-20
-par_c1 <-20.9
-par_g <-1.03 * 10^-10
-par_c2 <-3.63
-par_b <-2.569536e+00  # Sylvester 2011 used 3.15 * 10^-7
-par_c3 <-2.311053e+00 # ideally <3 and >2 (arbitrarily)
+par_a <-5.85e-20
+par_c1 <-20.9e+00
+par_g <-1.03e-10
+par_c2 <-3.63e+00
+par_b <-2.727334e+00  # Sylvester 2011 used 3.15 * 10^-7
+par_c3 <-2.305912e+00 # ideally <3 and >2 (arbitrarily)
 
 ## The following factors related to hull fouling are implemented but not
 ## tested due to the lack of data, and therefore not considered in the
@@ -160,26 +169,13 @@ Port_time<-NA # Time spent in port. Set to strictly >0 if data are provided, oth
 Paint_time<-NA # Time since last antifouling painting. Set to strictly >=0 if data are provided, otherwise NA
 
 ## parameter for introduction by ballast water
-par_ball<-8.253108e+04 # shape parameter
+par_ball<-9.819106e+04 # shape parameter
 
 ## Aquatic establishment scale parameter
-par_est_W<- 7.001148e-01 #arbitrary,<=1. Pioneer species should have high values (more likely to establish if the habitat is suitable), late succession species lower values.
+par_est_W<- 7.004247e-01 #arbitrary,<=1. Pioneer species should have high values (more likely to establish if the habitat is suitable), late succession species lower values.
 
 # Optimal Temperature and Conductivity for establishment
 specTemp <- 13 # optimal Temperature (degrees C)
 specCond <- 100 # optimal Conductivity (mS/m)
 
-#### Initialization info #################################
-
-## inclue readOGR in InitializeSpread for data
-
-Terrestrial_netw_data <- readOGR(dsn="C:/Users/mbagnara/Desktop/FinalDataFilesCASPIAN",layer="RailRoadNetw_Intersection_100519") # A shapefile containing a terrestrial traffic network; will be read in as a SpatialLinesDataFrame object
-Water_netw_data <- readOGR(dsn="C:/Users/mbagnara/Desktop/FinalDataFilesCASPIAN",layer="Waterways_Netw")
-
-env_terrestrial <- read.csv("C:/Users/mbagnara/Desktop/FinalDataFilesCASPIAN/EnvironData_Terrestrial.csv",sep=";",h=T)
-env_aquatic <- read.csv("C:/Users/mbagnara/Desktop/FinalDataFilesCASPIAN/EnvironData_Waterways.csv",sep=";",h=T)
-
-Commodities_shape_data<- readOGR(dsn="C:/Users/mbagnara/Desktop/FinalDataFilesCASPIAN",layer="Cargo_shp") # file has three names: Commodities_shape_data, CargoAreas and Cargo_shp
-Pallets_netw_data<-read.csv("C:/Users/mbagnara/Desktop/FinalDataFilesCASPIAN/PalletsFlow.csv",sep=";",h=T)
-Container_netw_data<-read.csv("C:/Users/mbagnara/Desktop/FinalDataFilesCASPIAN/ContainerFlow.csv",sep=";",h=T)
-
+## END OF CASPIAN CONFIGURATION FILE ###########################################################################################################################################################

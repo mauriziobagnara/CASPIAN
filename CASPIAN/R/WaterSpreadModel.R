@@ -1,14 +1,6 @@
-#INCOMPLETE
-
-
 #ARGUMENTS:
 # parameters: model parameter values. Must be provided in the same order
 #   and same form shown in InitializationScript.R. Column names and order matter!
-# internal_dataset: wheter to use the dataset internally provided with traffic data. Default TRUE.
-# dir_data:if internal_dataset=FALSE, the folder where to look for traffic data. Otherwise ignored.
-# netw_data: if internal_dataset=FALSE, the layer of shapefile to be imported. Otherwise ignored.
-# Rdata_file: if internal_dataset=FALSE, .Rdata file with the traffic network. Otherwise ignored,
-#   alternative to netw_data.
 # initialize: Whether the model should be initialized. Default TRUE.
 # save_init: if initialize=TRUE, should the initialization file be saved? Default TRUE.
 # file_init: if initialize=TRUE, the name of the file to be created by InitializeSpread().
@@ -21,32 +13,24 @@
 # incl_attachment: if attachment to vehicles should be considered. Default TRUE.
 # incl_airflow: if vehicle airstream should be considered. Default TRUE.
 # incl_natural: if natural dispersal should be considered. Default TRUE.
-
 # max_dist: maximum distance (m) from initial coordinates for a segment to be considered infected.
 # makeplot: should model results be plotted as maps (could be a long process)? Default FALSE.
 # save_plot: logical. If TRUE, plots are created in the newly created folder as .png files.
 #   If FALSE, an x11() device is opened. Only considered if makeplot=TRUE. if
 # iter_save: which model iterations should be saved? By default=num_iter. If makeplot=TRUE, several maps
 #   will be created, one for each saved iteration.
-# save.restart: should results be saved in order to resume the simulation at a later stage? Default FALSE
-# restart: Should the simulation be resumed from previously saved results? Default FALSE. Results are saved automatically in restart.rData
-#   file_restart: if restart=TRUE, the FULL path of the file to be read in (previously created by ModelSpread() ).MUST BE an .Rdata file
-# export_results: Should results of the last iteration be exported in the newly created folder as a csv file?
-#   Default FALSE.
+
 # netw_type: the types of roads to be considered in the simulation. Default c("all").
 
 
 
-WaterSpreadModel <- function(parameters,init_obj,
+CASPIANSpreadAquatic <- function(parameters,init_obj,
                              Water_netw_data,
-                             dir_data=NULL, netw_data=NULL,Rdata_file=NULL,init_coords, num_iter,
+                             init_coords, num_iter,
                              incl_hullfouling=T,incl_natural_water=T,incl_ballast=TRUE,
-                             #species_preferences,
                              max_dist,Port_time=NA,Paint_time=NA,
                              iter_save=num_iter,plot_funct_rel=FALSE,
-                             save.restart=FALSE,restart=FALSE,file_restart=NULL,
                              export_results=F,
-                             #netw_type=c("all"),
                              traffic_type=c("all")){
 
   ####################################################################
@@ -277,15 +261,6 @@ WaterSpreadModel <- function(parameters,init_obj,
   close(pb)
 
   water_shp@data<-water_netw_out
-
-  if (save.restart){
-    cat("\n Assembling and saving restart object \n")
-
-    water_restart_data<-list(water_shp,init_segm)
-    names(water_restart_data)<-c("water_shp","init_segm")
-
-    save(water_restart_data, file = file.path(dir.name,"water_restart.Rdata"))
-  }
 
   return(modelList)
 }
